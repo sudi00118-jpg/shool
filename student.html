@@ -23,6 +23,7 @@
 <body>
 
 <div class="container">
+    <!-- Header (ከላይ እንዲሆን የተስተካከለ) -->
     <div class="header">
         <div>
             <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
@@ -34,12 +35,7 @@
         </div>
     </div>
 
-    <!-- 📢 Announcements Display -->
-    <div class="card">
-        <h2>📢 School Announcements (ማስታወቂያዎች)</h2>
-        <div id="announcementsList">Loading announcements...</div>
-    </div>
-
+    <!-- 📜 My Report Card Section -->
     <div class="card">
         <h2>📜 My Report Card (የእኔ ውጤት)</h2>
         <table>
@@ -54,6 +50,12 @@
             </tbody>
         </table>
     </div>
+
+    <!-- 📢 Announcements Display Section -->
+    <div class="card">
+        <h2>📢 School Announcements (ማስታወቂያዎች)</h2>
+        <div id="announcementsList">Loading announcements...</div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -62,23 +64,29 @@
 <script>
 async function loadAnnouncements() {
     const list = document.getElementById("announcementsList");
-    const { data: ann } = await supabaseClient.from('announcements')
-        .select('*')
-        .in('target_group', ['all', 'students'])
-        .order('created_at', { ascending: false });
+    try {
+        const { data: ann, error } = await supabaseClient.from('announcements')
+            .select('*')
+            .in('target_group', ['all', 'students'])
+            .order('created_at', { ascending: false });
 
-    if (!ann || ann.length === 0) {
-        list.innerHTML = "<p>No announcements right now.</p>";
-        return;
+        if (error) throw error;
+
+        if (!ann || ann.length === 0) {
+            list.innerHTML = "<p>No announcements right now.</p>";
+            return;
+        }
+
+        list.innerHTML = ann.map(a => `
+            <div class="ann-box">
+                <h4 style="color: #15803d;">📌 ${a.title}</h4>
+                <p style="margin-top: 5px; color: #334155;">${a.message}</p>
+                <small style="color: #64748b;">📅 ${new Date(a.created_at).toLocaleDateString()}</small>
+            </div>
+        `).join('');
+    } catch (err) {
+        list.innerHTML = `<p style="color:red;">Error loading announcements: ${err.message}</p>`;
     }
-
-    list.innerHTML = ann.map(a => `
-        <div class="ann-box">
-            <h4 style="color: #15803d;">📌 ${a.title}</h4>
-            <p style="margin-top: 5px; color: #334155;">${a.message}</p>
-            <small style="color: #64748b;">📅 ${new Date(a.created_at).toLocaleDateString()}</small>
-        </div>
-    `).join('');
 }
 
 async function loadMyGrades() {
@@ -90,10 +98,12 @@ async function loadMyGrades() {
             return;
         }
 
-        const { data: grades } = await supabaseClient
+        const { data: grades, error } = await supabaseClient
             .from('grades')
             .select('*')
             .eq('student_id', user.id);
+
+        if (error) throw error;
 
         if (!grades || grades.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
