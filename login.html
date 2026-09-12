@@ -28,23 +28,23 @@
     <div class="subtitle">የነገው ተስፋ — School Portal</div>
 
     <div class="role-buttons">
-        <div class="role active" onclick="selectRole('admin', this)"><span class="icon">👨‍💼</span> አስተዳዳሪ</div>
-        <div class="role" onclick="selectRole('teacher', this)"><span class="icon">👨‍🏫</span> መምህር</div>
-        <div class="role" onclick="selectRole('student', this)"><span class="icon">👨‍🎓</span> ተማሪ</div>
+        <div class="role active" onclick="selectRole('admin', this)"><span class="icon">👨‍💼</span> Admin</div>
+        <div class="role" onclick="selectRole('teacher', this)"><span class="icon">👨‍🏫</span> Teacher</div>
+        <div class="role" onclick="selectRole('student', this)"><span class="icon">👨‍🎓</span> Student</div>
     </div>
 
     <form onsubmit="login(event)">
-        <label>የኢሜይል አድራሻ</label>
-        <input id="email" type="email" placeholder="Email address" required>
+        <label>Email Address</label>
+        <input id="email" type="email" placeholder="Enter email address" required>
 
-        <label>የየለፍ ቃል</label>
-        <input id="password" type="password" placeholder="Password" required>
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Enter password" required>
 
-        <button class="login-btn" type="submit">🔐 ይግቡ</button>
+        <button class="login-btn" type="submit">🔐 Login</button>
     </form>
 
     <div id="message" class="message"></div>
-    <div class="footer">የወደፊት ተስፋ ትምህርት ቤት © 2026</div>
+    <div class="footer">Future Hope School © 2026</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -66,15 +66,11 @@ async function login(event) {
     const message = document.getElementById("message");
 
     message.style.color = "#102a43";
-    message.textContent = "⏳ በመግባት ላይ...";
+    message.textContent = "⏳ Logging in...";
 
     try {
-        if (typeof supabase === 'undefined') {
-            throw new Error("supabase-config.js አልተገናኘም!");
-        }
-
-        // 1. Supabase Authentication
-        const { data, error } = await supabase.auth.signInWithPassword({
+        // 1. Supabase Authentication Login
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         });
@@ -86,7 +82,7 @@ async function login(event) {
         }
 
         // 2. Profile fetch
-        const { data: profile, error: profileError } = await supabase
+        const { data: profile, error: profileError } = await supabaseClient
             .from('profiles')
             .select('role')
             .eq('id', data.user.id)
@@ -94,29 +90,29 @@ async function login(event) {
 
         if (profileError) {
             message.style.color = "#d92d20";
-            message.textContent = "❌ DB Error: " + profileError.message;
+            message.textContent = "❌ Database Error: " + profileError.message;
             return;
         }
 
         if (!profile) {
             message.style.color = "#d92d20";
-            message.textContent = "❌ Profile አልተገኘም!";
+            message.textContent = "❌ User profile not found!";
             return;
         }
 
         if (profile.role === selectedRole) {
             message.style.color = "#027a48";
-            message.textContent = "✅ በትክክል ገብተዋል! በመቀየር ላይ...";
+            message.textContent = "✅ Login successful!";
             setTimeout(() => {
                 window.location.href = selectedRole + ".html";
             }, 800);
         } else {
             message.style.color = "#d92d20";
-            message.textContent = `❌ ይህ አካውንት የተመዘገበው እንደ ${profile.role} ነው።`;
+            message.textContent = `❌ Account is registered as ${profile.role}.`;
         }
     } catch (err) {
         message.style.color = "#d92d20";
-        message.textContent = "❌ Error: " + err.message;
+        message.textContent = "❌ Connection Error: " + err.message;
     }
 }
 </script>
