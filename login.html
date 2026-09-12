@@ -17,14 +17,12 @@
         .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-control:focus { border-color: #047857; }
         
-        /* 👨‍🎓 የወላጅ/ተማሪ ግባ በተን */
         .btn-login { width: 100%; background: #047857; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; transition: 0.3s; margin-bottom: 10px; }
         .btn-login:hover { background: #065f46; }
 
         .divider { border-top: 1px solid #e2e8f0; margin: 20px 0; position: relative; text-align: center; }
         .divider span { background: #ffffff; padding: 0 10px; color: #94a3b8; font-size: 12px; position: relative; top: -10px; }
 
-        /* 👨‍🏫 የመምህራን መግቢያ በተን */
         .btn-teacher { width: 100%; background: #0284c7; color: white; padding: 11px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; margin-bottom: 15px; }
         .btn-teacher:hover { background: #0369a1; }
 
@@ -38,29 +36,25 @@
 <div class="login-card">
     <h2><i class="fa-solid fa-school"></i> የትምህርት ቤት መግቢያ</h2>
     
-    <!-- 1. የወላጅ/ተማሪ መግቢያ ፎርም -->
     <div class="form-group">
         <label for="loginName">የተማሪው ሙሉ ስም</label>
-        <input type="text" id="loginName" class="form-control" placeholder="ምሳሌ፦ አቤል ከበደ">
+        <input type="text" id="loginName" class="form-control" placeholder="ምሳሌ፦ አቤል ከበደ" required>
     </div>
 
     <div class="form-group">
         <label for="loginPhone">የወላጅ ስልክ ቁጥር</label>
-        <input type="tel" id="loginPhone" class="form-control" placeholder="0912345678">
+        <input type="tel" id="loginPhone" class="form-control" placeholder="0912345678" required>
     </div>
 
-    <!-- 🟢 የወላጅ/ተማሪ ግባ በተን -->
     <button onclick="loginUser()" id="loginBtn" class="btn-login">የወላጅ/ተማሪ ግባ</button>
 
     <div class="divider"><span>ወይም</span></div>
 
-    <!-- 🔵 የመምህራን መግቢያ በተን (ወደ teacher-login.html የሚወስድ) -->
     <a href="teacher-login.html" class="btn-teacher">
         <i class="fa-solid fa-chalkboard-user"></i>
         <span>የመምህር መግቢያ (Teacher Login)</span>
     </a>
 
-    <!-- 📝 ወደ ሪጅስትሬሽን የሚወስድ ሊንክ -->
     <div class="register-link">
         አካውንት የለዎትም? <a href="register.html">እዚህ ይመዝገቡ (Register)</a>
     </div>
@@ -99,7 +93,13 @@ async function loginUser() {
         if (error) throw error;
 
         if (students && students.length > 0) {
+            // የተማሪውን መረጃ በ LocalStorage ማስቀመጥ
+            localStorage.setItem('loggedInStudent', JSON.stringify(students[0]));
+            
             alert(`እንኳን ደህና መጡ! ተማሪ ${students[0].name} (ክፍል ${students[0].grade}) በስኬት ገብተዋል።`);
+            
+            // 🎯 OK ሲባል ቀጥታ ወደ ተማሪው ገጽ (student.html) መውሰጃ መስመር
+            window.location.href = "student.html";
         } else {
             alert("የተሳሳተ ስም ወይም የስልክ ቁጥር! እባክዎን መጀመሪያ ይመዝገቡ።");
         }
