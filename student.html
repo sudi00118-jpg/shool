@@ -54,6 +54,23 @@
         </table>
     </div>
 
+    <!-- 🗓️ Class Timetable Section -->
+    <div class="card">
+        <h2>🗓️ Class Timetable (የክፍል ፕሮግራም)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day (ቀን)</th>
+                    <th>Time (ሰዓት)</th>
+                    <th>Subject (ትምህርት)</th>
+                </tr>
+            </thead>
+            <tbody id="timetableTable">
+                <tr><td colspan="3">Loading schedule...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
     <!-- 📅 My Attendance History -->
     <div class="card">
         <h2>📅 My Attendance Record (የአቴንዳንስ ታሪክ)</h2>
@@ -84,12 +101,10 @@
 async function loadAnnouncements() {
     const list = document.getElementById("announcementsList");
     try {
-        const { data: ann, error } = await supabaseClient.from('announcements')
+        const { data: ann } = await supabaseClient.from('announcements')
             .select('*')
             .in('target_group', ['all', 'students'])
             .order('created_at', { ascending: false });
-
-        if (error) throw error;
 
         if (!ann || ann.length === 0) {
             list.innerHTML = "<p>No announcements right now.</p>";
@@ -104,7 +119,27 @@ async function loadAnnouncements() {
             </div>
         `).join('');
     } catch (err) {
-        list.innerHTML = `<p style="color:red;">Error loading announcements: ${err.message}</p>`;
+        list.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    }
+}
+
+async function loadTimetable() {
+    const table = document.getElementById("timetableTable");
+    try {
+        const { data: tt } = await supabaseClient.from('timetable').select('*');
+        if (!tt || tt.length === 0) {
+            table.innerHTML = "<tr><td colspan='3'>No schedule posted yet.</td></tr>";
+            return;
+        }
+        table.innerHTML = tt.map(t => `
+            <tr>
+                <td><b>${t.day}</b></td>
+                <td>${t.time_slot}</td>
+                <td><b>${t.subject}</b></td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        table.innerHTML = `<tr><td colspan='3' style='color:red;'>Error: ${err.message}</td></tr>`;
     }
 }
 
@@ -119,12 +154,8 @@ async function loadMyData() {
             return;
         }
 
-        // 1. Load Grades
-        const { data: grades } = await supabaseClient
-            .from('grades')
-            .select('*')
-            .eq('student_id', user.id);
-
+        // Load Grades
+        const { data: grades } = await supabaseClient.from('grades').select('*').eq('student_id', user.id);
         if (!grades || grades.length === 0) {
             gradesTable.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
         } else {
@@ -136,13 +167,8 @@ async function loadMyData() {
             `).join('');
         }
 
-        // 2. Load Attendance
-        const { data: attendance } = await supabaseClient
-            .from('attendance')
-            .select('*')
-            .eq('student_id', user.id)
-            .order('date', { ascending: false });
-
+        // Load Attendance
+        const { data: attendance } = await supabaseClient.from('attendance').select('*').eq('student_id', user.id).order('date', { ascending: false });
         if (!attendance || attendance.length === 0) {
             attTable.innerHTML = "<tr><td colspan='2'>No attendance records found.</td></tr>";
         } else {
@@ -165,6 +191,7 @@ async function logout() {
 }
 
 loadAnnouncements();
+loadTimetable();
 loadMyData();
 </script>
 
