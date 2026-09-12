@@ -3,38 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal | Future Hope School</title>
+    <title>Student Portal | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f0f2f5; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .grade-badge { background: #027a48; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #f4f6f9; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { color: #102a43; margin-bottom: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e4e7ec; }
+        th, td { border-bottom: 1px solid #e4e7ec; padding: 12px; text-align: left; }
+        th { background: #f8fafc; color: #344054; }
+        .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2 id="welcomeMsg">👨‍🎓 Student Dashboard</h2>
-        <button onclick="logout()" style="padding: 8px 16px; background: #d92d20; color: white; border: none; border-radius: 6px; cursor: pointer;">Logout</button>
+        <div>
+            <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
+            <p>📍 አዋሽ 40 (Awash 40) | Student Portal</p>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
     <div class="card">
-        <h3>📚 Academic Report</h3><br>
+        <h2>📜 My Report Card (የእኔ ውጤት)</h2>
         <table>
             <thead>
                 <tr>
                     <th>Subject</th>
                     <th>Score</th>
-                    <th>Status</th>
                 </tr>
             </thead>
-            <tbody id="gradesTable">
-                <tr><td colspan="3">Fetching grades...</td></tr>
+            <tbody id="myGradesTable">
+                <tr><td colspan="2">Loading your grades...</td></tr>
             </tbody>
         </table>
     </div>
@@ -44,47 +48,45 @@
 <script src="supabase-config.js"></script>
 
 <script>
-async function loadStudentData() {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        window.location.href = 'login.html';
-        return;
-    }
+async function loadMyGrades() {
+    const tableBody = document.getElementById("myGradesTable");
+    try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) {
+            window.location.href = "login.html";
+            return;
+        }
 
-    // Get User Profile
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-    if (profile) {
-        document.getElementById('welcomeMsg').textContent = `👨‍🎓 Welcome, ${profile.full_name}!`;
-    }
+        const { data: grades, error } = await supabaseClient
+            .from('grades')
+            .select('*')
+            .eq('student_id', user.id);
 
-    // Get Grades
-    const { data: grades, error } = await supabase.from('grades').select('*').eq('student_id', user.id);
-    const tbody = document.getElementById('gradesTable');
-    tbody.innerHTML = '';
+        if (error) throw error;
 
-    if (error || !grades.length) {
-        tbody.innerHTML = `<tr><td colspan="3">No grades found.</td></tr>`;
-        return;
-    }
+        if (!grades || grades.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
+            return;
+        }
 
-    grades.forEach(g => {
-        tbody.innerHTML += `
+        tableBody.innerHTML = grades.map(g => `
             <tr>
-                <td>${g.subject}</td>
+                <td><b>${g.subject}</b></td>
                 <td><b>${g.score}%</b></td>
-                <td><span class="grade-badge">${g.score >= 50 ? 'PASS' : 'FAIL'}</span></td>
             </tr>
-        `;
-    });
+        `).join('');
+
+    } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan='2' style='color:red;'>Error: ${err.message}</td></tr>`;
+    }
 }
 
 async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = 'login.html';
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
 }
 
-loadStudentData();
+loadMyGrades();
 </script>
 
 </body>
