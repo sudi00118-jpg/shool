@@ -22,7 +22,9 @@
         .badge-admin { background: #e0f2fe; color: #0369a1; }
         .badge-teacher { background: #fef3c7; color: #b45309; }
         .badge-student { background: #dcfce7; color: #15803d; }
+        .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
         .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
+        .header-btns { display: flex; align-items: center; }
     </style>
 </head>
 <body>
@@ -33,7 +35,10 @@
             <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
             <p>📍 አዋሽ 40 (Awash 40) | Admin Portal</p>
         </div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <div class="header-btns">
+            <a href="profile.html" class="btn-profile">⚙️ Profile</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
     </div>
 
     <!-- 📢 Announcement Form Section -->
