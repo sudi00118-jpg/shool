@@ -41,35 +41,22 @@
                 <input id="annTitle" placeholder="Title (ርዕስ)" required>
                 <select id="annTarget" required>
                     <option value="all">🌍 For Everyone (ለሁሉም)</option>
-                    <option value="students">👨‍🎓 For Students Only (ለተማሪዎች ብቻ)</option>
-                    <option value="teachers">👨‍🏫 For Teachers Only (ለተማሪዎች ብቻ)</option>
+                    <option value="students">👨‍🎓 For Students Only (ለተማሪዎች)</option>
+                    <option value="teachers">👨‍🏫 For Teachers Only (ለተማሪዎች)</option>
+                    <option value="parents">👨‍👩‍👦 For Parents Only (ለወላጆች)</option>
+                </select>
+                <select id="annGrade" required>
+                    <option value="All">All Grades (ለሁሉም ክፍል)</option>
+                    <option value="Grade 9">Grade 9 (9ኛ ክፍል)</option>
+                    <option value="Grade 10">Grade 10 (10ኛ ክፍል)</option>
+                    <option value="Grade 11">Grade 11 (11ኛ ክፍል)</option>
+                    <option value="Grade 12">Grade 12 (12ኛ ክፍል)</option>
                 </select>
                 <textarea id="annMessage" placeholder="Message content..." style="grid-column: 1/-1; height: 80px;" required></textarea>
                 <button class="btn-save" type="submit">Post Announcement</button>
             </div>
         </form>
         <div id="annStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
-    </div>
-
-    <!-- 📅 Add Timetable Section -->
-    <div class="card">
-        <h2>🗓️ Add Class Timetable (የክፍል ፕሮግራም ማስገቢያ)</h2>
-        <form onsubmit="saveTimetable(event)">
-            <div class="form-grid">
-                <select id="ttDay" required>
-                    <option value="Monday">Monday (ሰኞ)</option>
-                    <option value="Tuesday">Tuesday (ማክሰኞ)</option>
-                    <option value="Wednesday">Wednesday (ረቡዕ)</option>
-                    <option value="Thursday">Thursday (ሐሙስ)</option>
-                    <option value="Friday">Friday (ዓርብ)</option>
-                </select>
-                <input id="ttTime" placeholder="Time (e.g. 2:00 AM - 3:00 AM)" required>
-                <input id="ttSubject" placeholder="Subject (ትምህርት)" required>
-                <input id="ttGrade" placeholder="Grade (e.g. Grade 10)" value="Grade 10" required>
-                <button class="btn-save" type="submit">Save Schedule</button>
-            </div>
-        </form>
-        <div id="ttStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
     </div>
 
     <!-- ➕ Add New User -->
@@ -80,10 +67,17 @@
                 <input id="regName" placeholder="Full Name" required>
                 <input id="regEmail" type="email" placeholder="Email Address" required>
                 <input id="regPass" type="password" placeholder="Password" required>
-                <select id="regRole" required>
-                    <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
-                    <option value="admin">Admin</option>
+                <select id="regRole" onchange="toggleGradeSelect()" required>
+                    <option value="student">Student (ተማሪ)</option>
+                    <option value="parent">Parent (ወላጅ)</option>
+                    <option value="teacher">Teacher (መምህር)</option>
+                    <option value="admin">Admin (ዳይሬክተር)</option>
+                </select>
+                <select id="regGrade">
+                    <option value="Grade 9">Grade 9</option>
+                    <option value="Grade 10" selected>Grade 10</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
                 </select>
                 <button class="btn-save" type="submit">Save User to Supabase</button>
             </div>
@@ -96,10 +90,21 @@
 <script src="supabase-config.js"></script>
 
 <script>
+function toggleGradeSelect() {
+    const role = document.getElementById("regRole").value;
+    const gradeSelect = document.getElementById("regGrade");
+    if (role === "student" || role === "parent") {
+        gradeSelect.style.display = "block";
+    } else {
+        gradeSelect.style.display = "none";
+    }
+}
+
 async function postAnnouncement(e) {
     e.preventDefault();
     const title = document.getElementById("annTitle").value.trim();
     const target = document.getElementById("annTarget").value;
+    const grade = document.getElementById("annGrade").value;
     const message = document.getElementById("annMessage").value.trim();
     const status = document.getElementById("annStatusMsg");
 
@@ -108,7 +113,7 @@ async function postAnnouncement(e) {
 
     try {
         const { error } = await supabaseClient.from('announcements').insert([
-            { title, target_group: target, message }
+            { title, target_group: target, target_grade: grade, message }
         ]);
 
         if (error) throw error;
@@ -122,39 +127,13 @@ async function postAnnouncement(e) {
     }
 }
 
-async function saveTimetable(e) {
-    e.preventDefault();
-    const day = document.getElementById("ttDay").value;
-    const time_slot = document.getElementById("ttTime").value.trim();
-    const subject = document.getElementById("ttSubject").value.trim();
-    const grade_level = document.getElementById("ttGrade").value.trim();
-    const status = document.getElementById("ttStatusMsg");
-
-    status.style.color = "#102a43";
-    status.textContent = "⏳ Saving timetable...";
-
-    try {
-        const { error } = await supabaseClient.from('timetable').insert([
-            { day, time_slot, subject, grade_level }
-        ]);
-
-        if (error) throw error;
-
-        status.style.color = "green";
-        status.textContent = "✅ Class Schedule added successfully!";
-        document.querySelectorAll("form")[1].reset();
-    } catch (err) {
-        status.style.color = "red";
-        status.textContent = "❌ Error: " + err.message;
-    }
-}
-
 async function registerUser(e) {
     e.preventDefault();
     const fullName = document.getElementById("regName").value.trim();
     const email = document.getElementById("regEmail").value.trim();
     const password = document.getElementById("regPass").value;
     const role = document.getElementById("regRole").value;
+    const grade = document.getElementById("regGrade").value;
     const status = document.getElementById("regStatusMsg");
 
     status.style.color = "#102a43";
@@ -164,7 +143,7 @@ async function registerUser(e) {
         const { data, error } = await supabaseClient.auth.signUp({
             email: email,
             password: password,
-            options: { data: { full_name: fullName, role: role } }
+            options: { data: { full_name: fullName, role: role, grade: grade } }
         });
 
         if (error) throw error;
@@ -174,13 +153,14 @@ async function registerUser(e) {
                 id: data.user.id,
                 full_name: fullName,
                 email: email,
-                role: role
+                role: role,
+                grade: grade
             });
         }
 
         status.style.color = "green";
         status.textContent = "✅ User created successfully!";
-        document.querySelectorAll("form")[2].reset();
+        document.querySelectorAll("form")[1].reset();
     } catch (err) {
         status.style.color = "red";
         status.textContent = "❌ Error: " + err.message;
