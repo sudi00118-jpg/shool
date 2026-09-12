@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Future Hope School</title>
+    <title>Admin Dashboard | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background: #f4f6f9; padding: 20px; }
         .container { max-width: 900px; margin: auto; }
+        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h2 { color: #102a43; margin-bottom: 15px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        input, select, button { width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; }
+        input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; }
+        textarea { grid-column: 1 / -1; resize: vertical; min-height: 80px; }
         .btn-save { background: #102a43; color: white; border: 0; font-weight: bold; cursor: pointer; grid-column: 1 / -1; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border-bottom: 1px solid #e4e7ec; padding: 12px; text-align: left; }
@@ -20,13 +22,41 @@
         .badge-admin { background: #e0f2fe; color: #0369a1; }
         .badge-teacher { background: #fef3c7; color: #b45309; }
         .badge-student { background: #dcfce7; color: #15803d; }
+        .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="header">
+        <div>
+            <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
+            <p>📍 አዋሽ 40 (Awash 40) | Admin Portal</p>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- 📢 Announcement Form Section -->
     <div class="card">
-        <h2>➕ Add New User</h2>
+        <h2>📢 Post Announcement (ማስታወቂያ መልቀቂያ)</h2>
+        <form onsubmit="postAnnouncement(event)">
+            <div class="form-grid">
+                <input id="annTitle" placeholder="Topic / ርዕስ (ምሳሌ፦ የስብሰባ ጥሪ)" required>
+                <select id="annTarget" required>
+                    <option value="all">🌐 For Everyone (ለሁሉም - ተማሪ፣ አስተማሪ፣ ወላጅ)</option>
+                    <option value="teachers">👨‍🏫 For Teachers Only (ለአስተማሪዎች ብቻ)</option>
+                    <option value="students">👨‍🎓 For Students Only (ለተማሪዎች ብቻ)</option>
+                </select>
+                <textarea id="annMessage" placeholder="የማስታወቂያው ዝርዝር መልእክት..." required></textarea>
+                <button class="btn-save" type="submit">Post Announcement</button>
+            </div>
+        </form>
+        <div id="annStatus" style="font-weight: bold; margin-top: 10px;"></div>
+    </div>
+
+    <!-- ➕ Register User Section -->
+    <div class="card">
+        <h2>➕ Add New User (አዲስ ሰው መመዝገቢያ)</h2>
         <form onsubmit="addUser(event)">
             <div class="form-grid">
                 <input id="fullName" placeholder="Full Name" required>
@@ -43,8 +73,9 @@
         <div id="statusMsg" style="font-weight: bold; margin-top: 10px;"></div>
     </div>
 
+    <!-- 📋 Registered Users -->
     <div class="card">
-        <h2>📋 Registered Users</h2>
+        <h2>📋 Registered Users List</h2>
         <table>
             <thead>
                 <tr>
@@ -64,23 +95,43 @@
 <script src="supabase-config.js"></script>
 
 <script>
-// 1. Fetch and Display Users
-async function loadUsers() {
-    const tableBody = document.getElementById("userTable");
-    
+// 1. Post Announcement
+async function postAnnouncement(e) {
+    e.preventDefault();
+    const title = document.getElementById("annTitle").value.trim();
+    const target = document.getElementById("annTarget").value;
+    const message = document.getElementById("annMessage").value.trim();
+    const status = document.getElementById("annStatus");
+
+    status.style.color = "#102a43";
+    status.textContent = "⏳ Posting announcement...";
+
     try {
-        const { data: users, error } = await supabaseClient
-            .from('profiles')
-            .select('*')
-            .order('created_at', { ascending: false });
+        const { error } = await supabaseClient.from('announcements').insert([
+            { title: title, target_group: target, message: message }
+        ]);
 
         if (error) throw error;
 
+        status.style.color = "green";
+        status.textContent = "✅ Announcement posted successfully!";
+        document.querySelectorAll("form")[0].reset();
+    } catch (err) {
+        status.style.color = "red";
+        status.textContent = "❌ Error: " + err.message;
+    }
+}
+
+// 2. Fetch Users
+async function loadUsers() {
+    const tableBody = document.getElementById("userTable");
+    try {
+        const { data: users, error } = await supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
         if (!users || users.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='3'>No users found.</td></tr>";
             return;
         }
-
         tableBody.innerHTML = users.map(u => `
             <tr>
                 <td><b>${u.full_name || 'N/A'}</b></td>
@@ -88,13 +139,12 @@ async function loadUsers() {
                 <td><span class="badge badge-${u.role}">${u.role.toUpperCase()}</span></td>
             </tr>
         `).join('');
-
     } catch (err) {
         tableBody.innerHTML = `<tr><td colspan='3' style='color:red;'>Error: ${err.message}</td></tr>`;
     }
 }
 
-// 2. Add New User
+// 3. Register User
 async function addUser(e) {
     e.preventDefault();
     const name = document.getElementById("fullName").value.trim();
@@ -107,18 +157,14 @@ async function addUser(e) {
     status.textContent = "⏳ Saving user...";
 
     try {
-        // Sign up user in Auth
         const { data, error } = await supabaseClient.auth.signUp({
             email: email,
             password: password,
-            options: {
-                data: { full_name: name, role: role }
-            }
+            options: { data: { full_name: name, role: role } }
         });
 
         if (error) throw error;
 
-        // Insert into profiles
         if (data.user) {
             const { error: profileError } = await supabaseClient
                 .from('profiles')
@@ -129,16 +175,19 @@ async function addUser(e) {
 
         status.style.color = "green";
         status.textContent = "✅ User registered successfully!";
-        document.querySelector("form").reset();
-        loadUsers(); // Refresh list
-
+        document.querySelectorAll("form")[1].reset();
+        loadUsers();
     } catch (err) {
         status.style.color = "red";
         status.textContent = "❌ Error: " + err.message;
     }
 }
 
-// Load users on page open
+async function logout() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+}
+
 loadUsers();
 </script>
 
