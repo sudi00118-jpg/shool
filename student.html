@@ -20,6 +20,7 @@
         .badge-Late { background: #fef3c7; color: #b45309; }
         .ann-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; margin-bottom: 10px; border-radius: 4px; }
         .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
+        .btn-pdf { background: #16a34a; color: white; border: 0; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; display: inline-block; }
         .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
         .header-btns { display: flex; align-items: center; }
     </style>
@@ -30,12 +31,29 @@
     <div class="header">
         <div>
             <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
-            <p>📍 አዋሽ 40 (Awash 40) | Student Portal</p>
+            <p>📍 አዋሽ 40 (Awash 40) | <span id="studentGradeText">Student Portal</span></p>
         </div>
         <div class="header-btns">
             <a href="profile.html" class="btn-profile">⚙️ Profile</a>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
+    </div>
+
+    <!-- 📝 Upcoming Exam Schedule -->
+    <div class="card">
+        <h2>📝 Upcoming Exam Schedule (የፈተና ፕሮግራም)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody id="examTable">
+                <tr><td colspan="3">Loading exam schedule...</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- 📜 My Report Card Section -->
@@ -52,39 +70,7 @@
                 <tr><td colspan="2">Loading your grades...</td></tr>
             </tbody>
         </table>
-    </div>
-
-    <!-- 🗓️ Class Timetable Section -->
-    <div class="card">
-        <h2>🗓️ Class Timetable (የክፍል ፕሮግራም)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Day (ቀን)</th>
-                    <th>Time (ሰዓት)</th>
-                    <th>Subject (ትምህርት)</th>
-                </tr>
-            </thead>
-            <tbody id="timetableTable">
-                <tr><td colspan="3">Loading schedule...</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- 📅 My Attendance History -->
-    <div class="card">
-        <h2>📅 My Attendance Record (የአቴንዳንስ ታሪክ)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date (ቀን)</th>
-                    <th>Status (ሁኔታ)</th>
-                </tr>
-            </thead>
-            <tbody id="myAttendanceTable">
-                <tr><td colspan="2">Loading attendance...</td></tr>
-            </tbody>
-        </table>
+        <button class="btn-pdf" onclick="downloadPDF()">📄 Download PDF Report Card</button>
     </div>
 
     <!-- 📢 Announcements Display Section -->
@@ -95,104 +81,107 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script src="supabase-config.js"></script>
 
 <script>
-async function loadAnnouncements() {
-    const list = document.getElementById("announcementsList");
-    try {
-        const { data: ann } = await supabaseClient.from('announcements')
-            .select('*')
-            .in('target_group', ['all', 'students'])
-            .order('created_at', { ascending: false });
+let currentStudentName = "Student";
+let studentGradesData = [];
+let studentGrade = "Grade 10";
 
-        if (!ann || ann.length === 0) {
-            list.innerHTML = "<p>No announcements right now.</p>";
-            return;
-        }
+async function init() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) { window.location.href = "login.html"; return; }
 
-        list.innerHTML = ann.map(a => `
-            <div class="ann-box">
-                <h4 style="color: #15803d;">📌 ${a.title}</h4>
-                <p style="margin-top: 5px; color: #334155;">${a.message}</p>
-                <small style="color: #64748b;">📅 ${new Date(a.created_at).toLocaleDateString()}</small>
-            </div>
-        `).join('');
-    } catch (err) {
-        list.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
+    if (profile) {
+        currentStudentName = profile.full_name;
+        studentGrade = profile.grade || "Grade 10";
+        document.getElementById("studentGradeText").textContent = `${studentGrade} Portal`;
     }
+
+    loadExams(studentGrade);
+    loadAnnouncements(studentGrade);
+    loadMyGrades(user.id);
 }
 
-async function loadTimetable() {
-    const table = document.getElementById("timetableTable");
-    try {
-        const { data: tt } = await supabaseClient.from('timetable').select('*');
-        if (!tt || tt.length === 0) {
-            table.innerHTML = "<tr><td colspan='3'>No schedule posted yet.</td></tr>";
-            return;
-        }
-        table.innerHTML = tt.map(t => `
+async function loadExams(grade) {
+    const table = document.getElementById("examTable");
+    const { data: exams } = await supabaseClient.from('exams').select('*').eq('grade', grade);
+    if (!exams || exams.length === 0) {
+        table.innerHTML = "<tr><td colspan='3'>No upcoming exams posted for your grade.</td></tr>";
+        return;
+    }
+    table.innerHTML = exams.map(e => `
+        <tr>
+            <td><b>${e.subject}</b></td>
+            <td>${e.exam_date}</td>
+            <td><b>${e.exam_time}</b></td>
+        </tr>
+    `).join('');
+}
+
+async function loadAnnouncements(grade) {
+    const list = document.getElementById("announcementsList");
+    const { data: ann } = await supabaseClient.from('announcements')
+        .select('*')
+        .or(`target_grade.eq.All,target_grade.eq.${grade}`)
+        .order('created_at', { ascending: false });
+
+    if (!ann || ann.length === 0) {
+        list.innerHTML = "<p>No announcements right now.</p>";
+        return;
+    }
+
+    list.innerHTML = ann.map(a => `
+        <div class="ann-box">
+            <h4 style="color: #15803d;">📌 ${a.title} (${a.target_grade})</h4>
+            <p style="margin-top: 5px; color: #334155;">${a.message}</p>
+            <small style="color: #64748b;">📅 ${new Date(a.created_at).toLocaleDateString()}</small>
+        </div>
+    `).join('');
+}
+
+async function loadMyGrades(userId) {
+    const gradesTable = document.getElementById("myGradesTable");
+    const { data: grades } = await supabaseClient.from('grades').select('*').eq('student_id', userId);
+    studentGradesData = grades || [];
+
+    if (!grades || grades.length === 0) {
+        gradesTable.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
+    } else {
+        gradesTable.innerHTML = grades.map(g => `
             <tr>
-                <td><b>${t.day}</b></td>
-                <td>${t.time_slot}</td>
-                <td><b>${t.subject}</b></td>
+                <td><b>${g.subject}</b></td>
+                <td><b>${g.score}%</b></td>
             </tr>
         `).join('');
-    } catch (err) {
-        table.innerHTML = `<tr><td colspan='3' style='color:red;'>Error: ${err.message}</td></tr>`;
     }
 }
 
-async function loadMyData() {
-    const gradesTable = document.getElementById("myGradesTable");
-    const attTable = document.getElementById("myAttendanceTable");
-
-    try {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) {
-            window.location.href = "login.html";
-            return;
-        }
-
-        // Load Grades
-        const { data: grades } = await supabaseClient.from('grades').select('*').eq('student_id', user.id);
-        if (!grades || grades.length === 0) {
-            gradesTable.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
-        } else {
-            gradesTable.innerHTML = grades.map(g => `
-                <tr>
-                    <td><b>${g.subject}</b></td>
-                    <td><b>${g.score}%</b></td>
-                </tr>
-            `).join('');
-        }
-
-        // Load Attendance
-        const { data: attendance } = await supabaseClient.from('attendance').select('*').eq('student_id', user.id).order('date', { ascending: false });
-        if (!attendance || attendance.length === 0) {
-            attTable.innerHTML = "<tr><td colspan='2'>No attendance records found.</td></tr>";
-        } else {
-            attTable.innerHTML = attendance.map(a => `
-                <tr>
-                    <td>${a.date}</td>
-                    <td><span class="badge badge-${a.status}">${a.status}</span></td>
-                </tr>
-            `).join('');
-        }
-
-    } catch (err) {
-        gradesTable.innerHTML = `<tr><td colspan='2' style='color:red;'>Error: ${err.message}</td></tr>`;
-    }
+function downloadPDF() {
+    if (studentGradesData.length === 0) { alert("No grades available to download PDF!"); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFillColor(16, 42, 67); doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(16);
+    doc.text("Future Hope Secondary School", 15, 18);
+    doc.setFontSize(10); doc.text(`Awash 40 | Official Report Card - ${studentGrade}`, 15, 28);
+    doc.setTextColor(0, 0, 0); doc.setFontSize(12);
+    doc.text(`Student Name: ${currentStudentName}`, 15, 52);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 52);
+    doc.autoTable({
+        startY: 60, head: [['Subject', 'Score']],
+        body: studentGradesData.map(g => [g.subject, `${g.score}%`]),
+        theme: 'striped', headStyles: { fillStyle: [16, 42, 67], textColor: [255, 255, 255] }
+    });
+    doc.save(`${currentStudentName}_ReportCard.pdf`);
 }
 
-async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "login.html";
-}
+async function logout() { await supabaseClient.auth.signOut(); window.location.href = "login.html"; }
 
-loadAnnouncements();
-loadTimetable();
-loadMyData();
+init();
 </script>
 
 </body>
