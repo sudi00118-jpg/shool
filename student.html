@@ -18,10 +18,20 @@
         .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
 
         /* Profile Card */
-        .profile-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; border-left: 6px solid #047857; }
-        .profile-info h3 { color: #064e3b; font-size: 18px; margin-bottom: 5px; }
+        .profile-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 6px solid #047857; }
+        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .profile-info h3 { color: #064e3b; font-size: 18px; margin-bottom: 4px; }
         .profile-info p { font-size: 14px; color: #64748b; }
         .badge { background: #dcfce7; color: #166534; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 13px; }
+
+        /* Edit Form inside Profile */
+        .edit-form { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #e2e8f0; display: none; }
+        .edit-form h4 { font-size: 14px; margin-bottom: 10px; color: #0f172a; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 3px; color: #475569; }
+        .form-group input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; }
+        .btn-save { background: #047857; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .btn-toggle { background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
 
         /* Sections */
         .section-title { font-size: 16px; font-weight: 600; color: #0f172a; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
@@ -45,13 +55,32 @@
 </header>
 
 <div class="container">
-    <!-- የተማሪ መረጃ -->
+    <!-- የተማሪ መረጃ ፕሮፋይል ካርድ -->
     <div class="profile-card">
-        <div class="profile-info">
-            <h3 id="stName">በመጫን ላይ...</h3>
-            <p><i class="fa-solid fa-phone"></i> የወላጅ ስልክ፦ <span id="stPhone">---</span></p>
+        <div class="profile-header">
+            <div class="profile-info">
+                <h3 id="stName">በመጫን ላይ...</h3>
+                <p><i class="fa-solid fa-phone"></i> ስልክ፦ <span id="stPhone">---</span></p>
+            </div>
+            <div>
+                <span class="badge" id="stGrade" style="margin-right: 10px;">---</span>
+                <button onclick="toggleEditForm()" class="btn-toggle"><i class="fa-solid fa-pen-to-square"></i> አስተካክል</button>
+            </div>
         </div>
-        <div class="badge" id="stGrade">---</div>
+
+        <!-- መረጃ መቀየሪያ ፎርም (Initially Hidden) -->
+        <div id="editFormSection" class="edit-form">
+            <h4>መረጃዎችን ማስተካከያ</h4>
+            <div class="form-group">
+                <label>የወላጅ ስልክ ቁጥር</label>
+                <input type="tel" id="editPhone">
+            </div>
+            <div class="form-group">
+                <label>አዲስ ፓስወርድ (Password)</label>
+                <input type="password" id="editPass" placeholder="አዲስ ፓስወርድ ካፈለጉ ይጻፉ">
+            </div>
+            <button onclick="updateProfile()" class="btn-save">ለውጦችን መዝግብ</button>
+        </div>
     </div>
 
     <!-- የትምህርት ፕሮግራም (Timetable) -->
@@ -82,17 +111,62 @@
 <script src="supabase-config.js"></script>
 
 <script>
-    const studentData = JSON.parse(localStorage.getItem('loggedInStudent'));
+    let studentData = JSON.parse(localStorage.getItem('loggedInStudent'));
 
     if (!studentData) {
         window.location.replace("login.html");
     } else {
+        displayStudentData();
+        loadTimetable();
+        loadAnnouncements();
+    }
+
+    function displayStudentData() {
         document.getElementById('stName').innerText = studentData.name;
         document.getElementById('stGrade').innerText = studentData.grade + "ኛ ክፍል";
         document.getElementById('stPhone').innerText = studentData.parent_phone;
+        document.getElementById('editPhone').value = studentData.parent_phone;
+    }
 
-        loadTimetable();
-        loadAnnouncements();
+    function toggleEditForm() {
+        const form = document.getElementById('editFormSection');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // ፕሮፋይል ማስተካከያ ወደ ዳታቤዝ መላኪያ
+    async function updateProfile() {
+        const newPhone = document.getElementById('editPhone').value.trim();
+        const newPass = document.getElementById('editPass').value.trim();
+
+        if (!newPhone) {
+            alert("ስልክ ቁጥር ባዶ ሊሆን አይችልም!");
+            return;
+        }
+
+        let updateData = { parent_phone: newPhone };
+        if (newPass) {
+            updateData.password = newPass;
+        }
+
+        try {
+            const { error } = await supabaseClient
+                .from('students')
+                .update(updateData)
+                .eq('id', studentData.id);
+
+            if (error) throw error;
+
+            // LocalStorage ማስተካከል
+            studentData.parent_phone = newPhone;
+            if (newPass) studentData.password = newPass;
+            localStorage.setItem('loggedInStudent', JSON.stringify(studentData));
+
+            alert("መረጃው በተሳካ ሁኔታ ተስተካክሏል!");
+            displayStudentData();
+            toggleEditForm();
+        } catch (err)  {
+            alert("ስህተት፦ " + err.message);
+        }
     }
 
     // የትምህርት ፕሮግራም ከ Supabase ማውጣት
