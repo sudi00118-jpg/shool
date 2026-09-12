@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #f4f6f9; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { color: #102a43; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #e4e7ec; padding: 12px; text-align: left; }
+        th { background: #f8fafc; color: #344054; }
+        .ann-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; margin-bottom: 10px; border-radius: 4px; }
+        .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
+        .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
+        select { width: 100%; padding: 10px; border-radius: 8px; font-size: 15px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
+            <p>📍 አዋሽ 40 (Awash 40) | Parent Portal (የወላጅ ገፅ)</p>
+        </div>
+        <div>
+            <a href="profile.html" class="btn-profile">⚙️ Profile</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- 👨‍🎓 Child Selection -->
+    <div class="card">
+        <h2>👨‍🎓 Select Student (የልጅዎን ስም ይምረጡ)</h2>
+        <select id="childSelect" onchange="loadChildData()">
+            <option value="">Loading students...</option>
+        </select>
+    </div>
+
+    <!-- 📝 Exam Schedule -->
+    <div class="card">
+        <h2>📝 Upcoming Exam Schedule (የፈተና ፕሮግራም)</h2>
+        <table>
+            <thead>
+                <tr><th>Subject</th><th>Date</th><th>Time</th></tr>
+            </thead>
+            <tbody id="examTable"><tr><td colspan="3">Select a student first.</td></tr></tbody>
+        </table>
+    </div>
+
+    <!-- 📜 Report Card -->
+    <div class="card">
+        <h2>📜 Child's Report Card (የልጅዎ ውጤት)</h2>
+        <table>
+            <thead><tr><th>Subject</th><th>Score</th></tr></thead>
+            <tbody id="gradesTable"><tr><td colspan="2">Select a student first.</td></tr></tbody>
+        </table>
+    </div>
+
+    <!-- 📢 Announcements -->
+    <div class="card">
+        <h2>📢 Announcements (ማስታወቂያዎች)</h2>
+        <div id="announcementsList">Loading announcements...</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+let allStudents = [];
+
+async function init() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) { window.location.href = "login.html"; return; }
+
+    const { data: students } = await supabaseClient.from('profiles').select('*').eq('role', 'student');
+    allStudents = students || [];
+
+    const select = document.getElementById("childSelect");
+    if (allStudents.length === 0) {
+        select.innerHTML = "<option>No students found.</option>";
+    } else {
+        select.innerHTML = '<option value="">Select Child...</option>' + 
+            allStudents.map(s => `<option value="${s.id}">${s.full_name} (${s.grade || 'Grade 10'})</option>`).join('');
+    }
+
+    loadAnnouncements();
+}
+
+async function loadChildData() {
+    const childId = document.getElementById("childSelect").value;
+    if (!childId) return;
+
+    const child = allStudents.find(s => s.id === childId);
+    const grade = child ? (child.grade || "Grade 10") : "Grade 10";
+
+    // Load Grades
+    const gradesTable = document.getElementById("gradesTable");
+    const { data: grades } = await supabaseClient.from('grades').select('*').eq('student_id', childId);
+    if (!grades || grades.length === 0) {
+        gradesTable.innerHTML = "<tr><td colspan='2'>No grades registered.</td></tr>";
+    } else {
+        gradesTable.innerHTML = grades.map(g => `<tr><td><b>${g.subject}</b></td><td><b>${g.score}%</b></td></tr>`).join('');
+    }
+
+    // Load Exams
+    const examTable = document.getElementById("examTable");
+    const { data: exams } = await supabaseClient.from('exams').select('*').eq('grade', grade);
+    if (!exams || exams.length === 0) {
+        examTable.innerHTML = "<tr><td colspan='3'>No exams scheduled.</td></tr>";
+    } else {
+        examTable.innerHTML = exams.map(e => `<tr><td><b>${e.subject}</b></td><td>${e.exam_date}</td><td><b>${e.exam_time}</b></td></tr>`).join('');
+    }
+}
+
+async function loadAnnouncements() {
+    const list = document.getElementById("announcementsList");
+    const { data: ann } = await supabaseClient.from('announcements')
+        .select('*')
+        .in('target_group', ['all', 'parents'])
+        .order('created_at', { ascending: false });
+
+    if (!ann || ann.length === 0) {
+        list.innerHTML = "<p>No announcements right now.</p>";
+        return;
+    }
+
+    list.innerHTML = ann.map(a => `
+        <div class="ann-box">
+            <h4 style="color: #15803d;">📌 ${a.title}</h4>
+            <p style="margin-top: 5px; color: #334155;">${a.message}</p>
+            <small style="color: #64748b;">📅 ${new Date(a.created_at).toLocaleDateString()}</small>
+        </div>
+    `).join('');
+}
+
+async function logout() { await supabaseClient.auth.signOut(); window.location.href = "login.html"; }
+
+init();
+</script>
+
+</body>
+</html>
