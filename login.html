@@ -3,81 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homeroom Teacher Portal | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <title>Login | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background: #f4f6f9; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
-        .header { background: #0f172a; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2 { color: #0f172a; margin-bottom: 15px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        input, select, button { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; }
-        .btn-save { background: #0f172a; color: white; border: 0; font-weight: bold; cursor: pointer; grid-column: 1 / -1; }
-        .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
-        .logout-btn { background: #dc2626; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border-bottom: 1px solid #e2e8f0; padding: 10px; text-align: left; }
-        th { background: #f8fafc; }
-        .badge-present { color: #16a34a; font-weight: bold; }
-        .badge-absent { color: #dc2626; font-weight: bold; }
-        .badge-late { color: #d97706; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .school-logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .school-title {
+            color: #0f172a;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .school-sub {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .input-box {
+            position: relative;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        #alertMsg {
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px;
+            display: none;
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div>
-            <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
-            <p>📍 አዋሽ 40 (Awash 40) | የክፍል ኃላፊ መምህር ገፅ (Homeroom Portal)</p>
-        </div>
-        <div>
-            <a href="profile.html" class="btn-profile">⚙️ Profile</a>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
+<div class="login-card">
+    <div class="school-logo">
+        <i class="fa-solid fa-graduation-cap"></i>
     </div>
+    <div class="school-title">የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</div>
+    <div class="school-sub">📍 አዋሽ 40 (Awash 40) | School Portal</div>
 
-    <!-- 📅 Take Attendance Section -->
-    <div class="card">
-        <h2>📅 የዕለቱ የአቴንዳንስ መቅረጫ (Daily Attendance)</h2>
-        <form onsubmit="saveAttendance(event)">
-            <div class="form-grid">
-                <select id="attStudentSelect" required>
-                    <option value="">ተማሪ ይምረጡ (Select Student)...</option>
-                </select>
-                <input id="attDate" type="date" required>
-                <select id="attStatus" required>
-                    <option value="Present">✅ Present (ተገኝቷል)</option>
-                    <option value="Absent">❌ Absent (ቀርቷል)</option>
-                    <option value="Late">⏰ Late (ዘግይቷል)</option>
-                </select>
-                <button class="btn-save" type="submit">አቴንዳንስ መዝግብ (Save Attendance)</button>
+    <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label>ኢሜይል (Email Address)</label>
+            <div class="input-box">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="loginEmail" placeholder="user@school.com" required>
             </div>
-        </form>
-        <div id="attStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
-    </div>
-
-    <!-- 📊 Attendance Report Section -->
-    <div class="card">
-        <h2>📊 የአቴንዳንስ ሪፖርት ማጠቃለያ (Attendance Report)</h2>
-        <div class="form-grid">
-            <input type="date" id="filterDate" onchange="loadAttendanceReport()">
-            <button onclick="loadAttendanceReport()" style="background: #2563eb; color: white; border: 0; font-weight: bold; cursor: pointer;">ሪፖርት አሳይ (View Report)</button>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>የተማሪ ስም</th>
-                    <th>ቀን</th>
-                    <th>ሁኔታ (Status)</th>
-                </tr>
-            </thead>
-            <tbody id="reportTableBody">
-                <tr><td colspan="3">ቀን መርጠው ሪፖርት ያውጡ...</td></tr>
-            </tbody>
-        </table>
+        <div class="form-group">
+            <label>የይለፍ ቃል (Password)</label>
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="submitBtn">
+            <span>ግባ (Sign In)</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </form>
+
+    <div id="alertMsg"></div>
+
+    <div class="footer-text">
+        © 2026 School Management System. All rights reserved.
     </div>
 </div>
 
@@ -85,75 +197,60 @@
 <script src="supabase-config.js"></script>
 
 <script>
-document.getElementById('attDate').valueAsDate = new Date();
-document.getElementById('filterDate').valueAsDate = new Date();
-
-async function loadStudents() {
-    const select = document.getElementById("attStudentSelect");
-    const { data: students } = await supabaseClient.from('profiles').select('*').eq('role', 'student');
-    if (students) {
-        select.innerHTML = '<option value="">ተማሪ ይምረጡ...</option>' + 
-            students.map(s => `<option value="${s.id}">${s.full_name} (${s.grade || 'Grade 10'})</option>`).join('');
-    }
-}
-
-async function saveAttendance(e) {
+async function handleLogin(e) {
     e.preventDefault();
-    const studentId = document.getElementById("attStudentSelect").value;
-    const date = document.getElementById("attDate").value;
-    const statusVal = document.getElementById("attStatus").value;
-    const msg = document.getElementById("attStatusMsg");
+    
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const alertMsg = document.getElementById("alertMsg");
+    const submitBtn = document.getElementById("submitBtn");
+
+    alertMsg.style.display = "block";
+    alertMsg.style.background = "#eff6ff";
+    alertMsg.style.color = "#1d4ed8";
+    alertMsg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ⏳ በመግባት ላይ...';
+    submitBtn.disabled = true;
 
     try {
-        const { error } = await supabaseClient.from('attendance').insert([
-            { student_id: studentId, date: date, status: statusVal }
-        ]);
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
         if (error) throw error;
-        msg.style.color = "green";
-        msg.textContent = "✅ አቴንዳንስ በትክክል ተመዝግቧል!";
-        loadAttendanceReport();
+
+        if (data.user) {
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('role')
+                .eq('id', data.user.id)
+                .single();
+
+            const userRole = profile ? profile.role : (data.user.user_metadata?.role || 'student');
+            redirectUser(userRole);
+        }
     } catch (err) {
-        msg.style.color = "red";
-        msg.textContent = "❌ Error: " + err.message;
+        alertMsg.style.background = "#fef2f2";
+        alertMsg.style.color = "#dc2626";
+        alertMsg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + err.message;
+        submitBtn.disabled = false;
     }
 }
 
-async function loadAttendanceReport() {
-    const filterDate = document.getElementById("filterDate").value;
-    const tbody = document.getElementById("reportTableBody");
+function redirectUser(role) {
+    const alertMsg = document.getElementById("alertMsg");
+    alertMsg.style.background = "#f0fdf4";
+    alertMsg.style.color = "#16a34a";
+    alertMsg.innerHTML = '<i class="fa-solid fa-circle-check"></i> ተሳክቷል! በማስተላለፍ ላይ...';
 
-    const { data: records, error } = await supabaseClient
-        .from('attendance')
-        .select('*, profiles(full_name)')
-        .eq('date', filterDate);
-
-    if (!records || records.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='3'>በዚህ ቀን የተመዘገበ አቴንዳንስ የለም።</td></tr>";
-        return;
-    }
-
-    tbody.innerHTML = records.map(r => {
-        let badgeClass = 'badge-present';
-        if (r.status === 'Absent') badgeClass = 'badge-absent';
-        if (r.status === 'Late') badgeClass = 'badge-late';
-
-        return `
-            <tr>
-                <td><b>${r.profiles ? r.profiles.full_name : 'Unknown Student'}</b></td>
-                <td>${r.date}</td>
-                <td class="${badgeClass}">${r.status}</td>
-            </tr>
-        `;
-    }).join('');
+    setTimeout(() => {
+        if (role === 'admin') window.location.href = 'admin.html';
+        else if (role === 'homeroom') window.location.href = 'homeroom.html';
+        else if (role === 'teacher') window.location.href = 'teacher.html';
+        else if (role === 'parent') window.location.href = 'parent.html';
+        else window.location.href = 'student.html';
+    }, 1000);
 }
-
-async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "login.html";
-}
-
-loadStudents();
-loadAttendanceReport();
 </script>
 
 </body>
