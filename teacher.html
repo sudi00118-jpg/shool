@@ -26,6 +26,7 @@
         <div>
             <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
             <p>📍 አዋሽ 40 (Awash 40) | Teacher Portal</p>
+            <small id="teacherNameDisplay" style="color: #60a5fa; font-weight: bold;"></small>
         </div>
         <div class="header-btns">
             <a href="profile.html" class="btn-profile">⚙️ Profile</a>
@@ -33,7 +34,7 @@
         </div>
     </div>
 
-    <!-- 📢 Post Class Announcement (የክፍል ማስታወቂያ/መረጃ መለቀቂያ) -->
+    <!-- 📢 Post Class Announcement -->
     <div class="card">
         <h2>📢 Post Class Announcement (ለተማሪዎችና ወላጆች መረጃ መለቀቂያ)</h2>
         <form onsubmit="postTeacherAnnouncement(event)">
@@ -52,7 +53,7 @@
         <div id="tAnnStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
     </div>
 
-    <!-- 📝 Add Exam Schedule (የፈተና ቀን መመዝገቢያ) -->
+    <!-- 📝 Add Exam Schedule -->
     <div class="card">
         <h2>📝 Schedule Exam (የፈተና ቀን ማስታወቂያ)</h2>
         <form onsubmit="saveExam(event)">
@@ -115,15 +116,37 @@
 <script>
 document.getElementById('attDate').valueAsDate = new Date();
 
+// መምህሩ መግባቱን ፈትሽ
+window.onload = function() {
+    const savedTeacher = localStorage.getItem('loggedInTeacher');
+    if (!savedTeacher) {
+        alert("እባክዎን መጀመሪያ ይግቡ!");
+        window.location.href = "teacher-login.html";
+        return;
+    }
+    const teacher = JSON.parse(savedTeacher);
+    document.getElementById('teacherNameDisplay').innerText = `👤 መምህር፦ ${teacher.name}`;
+    loadStudents();
+};
+
 async function loadStudents() {
     const select1 = document.getElementById("studentSelect");
     const select2 = document.getElementById("attStudentSelect");
     const { data: students } = await supabaseClient.from('profiles').select('*').eq('role', 'student');
-    if (students) {
+    if (students && students.length > 0) {
         const options = '<option value="">Select Student...</option>' + 
             students.map(s => `<option value="${s.id}">${s.full_name} (${s.grade || 'Grade 10'})</option>`).join('');
         select1.innerHTML = options;
         select2.innerHTML = options;
+    } else {
+        // 'students' ቴብል ከሆነ
+        const { data: stds } = await supabaseClient.from('students').select('*');
+        if (stds) {
+            const options = '<option value="">Select Student...</option>' + 
+                stds.map(s => `<option value="${s.id}">${s.name} (${s.grade || 'Grade 10'})</option>`).join('');
+            select1.innerHTML = options;
+            select2.innerHTML = options;
+        }
     }
 }
 
@@ -141,9 +164,7 @@ async function postTeacherAnnouncement(e) {
         const { error } = await supabaseClient.from('announcements').insert([
             { title, target_group: 'all', target_grade: grade, message }
         ]);
-
         if (error) throw error;
-
         status.style.color = "green";
         status.textContent = "✅ Message sent to " + grade + " students & parents!";
         document.querySelectorAll("form")[0].reset();
@@ -216,12 +237,10 @@ async function saveGrade(e) {
     }
 }
 
-async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "login.html";
+function logout() {
+    localStorage.removeItem('loggedInTeacher');
+    window.location.href = "teacher-login.html";
 }
-
-loadStudents();
 </script>
 
 </body>
