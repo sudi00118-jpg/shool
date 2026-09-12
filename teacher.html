@@ -1,39 +1,143 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teachers Management | Future Hope School</title>
-
-  <!-- Supabase CDN & JS Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js" defer></script>
-
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-    body { background: #f4f7fb; color: #172033; padding: 20px; }
-    .header { background: #102a43; color: white; padding: 17px 5%; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; margin-bottom: 20px; }
-    .container { max-width: 800px; margin: auto; }
-    .list-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .list-card h2 { margin-bottom: 15px; color: #102a43; }
-    .teacher-item { background: #eef2f7; padding: 12px; margin-bottom: 10px; border-radius: 5px; border-left: 5px solid #27ab83; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #f4f6f9; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { color: #102a43; margin-bottom: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        input, select, button { width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; }
+        .btn-save { background: #102a43; color: white; border: 0; font-weight: bold; cursor: pointer; grid-column: 1 / -1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #e4e7ec; padding: 12px; text-align: left; }
+        th { background: #f8fafc; color: #344054; }
+        .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
+    </style>
 </head>
 <body>
 
-  <div class="header">
-    <h2>🎓 Future Hope School - Teachers Portal</h2>
-  </div>
-
-  <div class="container">
-    <div class="list-card">
-      <h2>የተመዘገቡ መምህራን ዝርዝር</h2>
-      <!-- ዳታው በ Supabase በኩል እዚህ ቦታ ይገባል -->
-      <div id="teacherList">
-        <p>ዳታ እየጫነ ነው...</p>
-      </div>
+<div class="container">
+    <div class="header">
+        <div>
+            <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
+            <p>📍 አዋሽ 40 (Awash 40) | Teacher Portal</p>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
-  </div>
+
+    <div class="card">
+        <h2>📝 Add Student Grade (ውጤት ማስገቢያ)</h2>
+        <form onsubmit="saveGrade(event)">
+            <div class="form-grid">
+                <select id="studentSelect" required>
+                    <option value="">Select Student...</option>
+                </select>
+                <input id="subject" placeholder="Subject (Subject Name)" required>
+                <input id="score" type="number" min="0" max="100" placeholder="Score (0-100)" required>
+                <button class="btn-save" type="submit">Save Grade to Supabase</button>
+            </div>
+        </form>
+        <div id="statusMsg" style="font-weight: bold; margin-top: 10px;"></div>
+    </div>
+
+    <div class="card">
+        <h2>📊 Student Grades List (የተማሪዎች ውጤት)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Subject</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="gradeTable">
+                <tr><td colspan="3">Loading data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+async function loadStudents() {
+    const select = document.getElementById("studentSelect");
+    const { data: students } = await supabaseClient.from('profiles').select('*').eq('role', 'student');
+    if (students) {
+        select.innerHTML = '<option value="">Select Student...</option>' + 
+            students.map(s => `<option value="${s.id}">${s.full_name} (${s.email})</option>`).join('');
+    }
+}
+
+async function loadGrades() {
+    const tableBody = document.getElementById("gradeTable");
+    try {
+        const { data: grades, error } = await supabaseClient
+            .from('grades')
+            .select('*, profiles(full_name)')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!grades || grades.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='3'>No grades recorded yet.</td></tr>";
+            return;
+        }
+
+        tableBody.innerHTML = grades.map(g => `
+            <tr>
+                <td><b>${g.profiles ? g.profiles.full_name : 'N/A'}</b></td>
+                <td>${g.subject}</td>
+                <td><b>${g.score}%</b></td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan='3' style='color:red;'>Error: ${err.message}</td></tr>`;
+    }
+}
+
+async function saveGrade(e) {
+    e.preventDefault();
+    const studentId = document.getElementById("studentSelect").value;
+    const subject = document.getElementById("subject").value.trim();
+    const score = document.getElementById("score").value;
+    const status = document.getElementById("statusMsg");
+
+    status.style.color = "#102a43";
+    status.textContent = "⏳ Saving grade...";
+
+    try {
+        const { error } = await supabaseClient.from('grades').insert([
+            { student_id: studentId, subject: subject, score: parseInt(score) }
+        ]);
+
+        if (error) throw error;
+
+        status.style.color = "green";
+        status.textContent = "✅ Grade saved successfully!";
+        document.querySelector("form").reset();
+        loadGrades();
+    } catch (err) {
+        status.style.color = "red";
+        status.textContent = "❌ Error: " + err.message;
+    }
+}
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+}
+
+loadStudents();
+loadGrades();
+</script>
 
 </body>
 </html>
