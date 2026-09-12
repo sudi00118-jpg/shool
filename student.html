@@ -233,9 +233,12 @@
                         </div>
                     `;
                 });
+            } else {
+                box.innerHTML = '<p style="text-align:center; color:#64748b;">ምንም ማስታወቂያ የለም</p>';
             }
         } catch (err) {
             console.error(err);
+            document.getElementById('announcementsBox').innerHTML = '<p style="text-align:center; color:#64748b;">ምንም ማስታወቂያ የለም</p>';
         }
     }
 
