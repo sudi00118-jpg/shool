@@ -1,175 +1,222 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="am">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <title>Admin Portal | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background: #f4f6f9; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
-        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2 { color: #102a43; margin-bottom: 15px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; }
-        .btn-save { background: #102a43; color: white; border: 0; font-weight: bold; cursor: pointer; grid-column: 1 / -1; }
-        .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
-        .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
-        .header-btns { display: flex; align-items: center; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f4f7f6; color: #1f2937; padding: 20px; }
+        
+        .admin-container { max-width: 900px; margin: 0 auto; }
+        
+        /* 📩 Admin Bulk SMS Sender Card */
+        .sms-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .sms-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .sms-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #ecfdf5;
+            color: #047857;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .sms-card-title h2 { font-size: 19px; font-weight: 700; color: #064e3b; margin: 0; }
+        .sms-card-title p { font-size: 13px; color: #64748b; margin-top: 2px; }
+
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background-color: #f8fafc;
+            color: #0f172a;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #059669;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        .btn-send-sms {
+            width: 100%;
+            background: linear-gradient(135deg, #047857, #065f46);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(4, 120, 87, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .btn-send-sms:hover {
+            background: linear-gradient(135deg, #065f46, #064e3b);
+            transform: translateY(-2px);
+        }
+
+        .btn-send-sms:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div>
-            <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
-            <p>📍 አዋሽ 40 (Awash 40) | Admin Portal</p>
+<div class="admin-container">
+
+    <!-- 📩 Admin Bulk SMS Sender Section -->
+    <div class="sms-card">
+        <div class="sms-card-header">
+            <div class="sms-icon-box">
+                <i class="fa-solid fa-paper-plane"></i>
+            </div>
+            <div class="sms-card-title">
+                <h2>ለወላጆች የ SMS ማስታወቂያ መላኪያ</h2>
+                <p>በቀጥታ ለወላጆች መደበኛ ስልክ (SMS) አውቶማቲክ ማስታወቂያ ይላኩ</p>
+            </div>
         </div>
-        <div class="header-btns">
-            <a href="profile.html" class="btn-profile">⚙️ Profile</a>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+
+        <div class="form-group">
+            <label for="smsTarget">መልእክቱ ለማን ይላክ (Target Group)</label>
+            <select id="smsTarget" class="form-control">
+                <option value="all">ለሁሉም ተማሪ ወላጆች (All Parents)</option>
+                <option value="9">ለ 9ኛ ክፍል ወላጆች ብቻ</option>
+                <option value="10">ለ 10ኛ ክፍል ወላጆች ብቻ</option>
+            </select>
         </div>
+
+        <div class="form-group">
+            <label for="smsMessage">የመልእክቱ ይዘት (Message)</label>
+            <textarea id="smsMessage" rows="4" class="form-control" placeholder="ምሳሌ፦ የተከበራችሁ የወላጆች፣ የፊታችን እሁድ ጧት 2:30 የወላጅ ስብሰባ ስላለ እንድትገኙ እናስታውቃለን። - አዋሽ 40 የ2ኛ ደረጃ ትምህርት ቤት"></textarea>
+        </div>
+
+        <button onclick="sendAdminSMS()" id="sendSmsBtn" class="btn-send-sms">
+            <i class="fa-solid fa-envelope"></i>
+            <span>መልእክቱን በ SMS ላክ</span>
+        </button>
     </div>
 
-    <!-- 📢 Post Announcement -->
-    <div class="card">
-        <h2>📢 Post Announcement (ማስታወቂያ መለጠፊያ)</h2>
-        <form onsubmit="postAnnouncement(event)">
-            <div class="form-grid">
-                <input id="annTitle" placeholder="Title (ርዕስ)" required>
-                <select id="annTarget" required>
-                    <option value="all">🌍 For Everyone (ለሁሉም)</option>
-                    <option value="students">👨‍🎓 For Students Only (ለተማሪዎች)</option>
-                    <option value="teachers">👨‍🏫 For Teachers Only (ለተማሪዎች)</option>
-                    <option value="parents">👨‍👩‍👦 For Parents Only (ለወላጆች)</option>
-                </select>
-                <select id="annGrade" required>
-                    <option value="All">All Grades (ለሁሉም ክፍል)</option>
-                    <option value="Grade 9">Grade 9 (9ኛ ክፍል)</option>
-                    <option value="Grade 10">Grade 10 (10ኛ ክፍል)</option>
-                    <option value="Grade 11">Grade 11 (11ኛ ክፍል)</option>
-                    <option value="Grade 12">Grade 12 (12ኛ ክፍል)</option>
-                </select>
-                <textarea id="annMessage" placeholder="Message content..." style="grid-column: 1/-1; height: 80px;" required></textarea>
-                <button class="btn-save" type="submit">Post Announcement</button>
-            </div>
-        </form>
-        <div id="annStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
-    </div>
-
-    <!-- ➕ Add New User -->
-    <div class="card">
-        <h2>➕ Add New User (አዲስ ሰው መመዝገቢያ)</h2>
-        <form onsubmit="registerUser(event)">
-            <div class="form-grid">
-                <input id="regName" placeholder="Full Name" required>
-                <input id="regEmail" type="email" placeholder="Email Address" required>
-                <input id="regPass" type="password" placeholder="Password" required>
-                <select id="regRole" onchange="toggleGradeSelect()" required>
-                    <option value="student">Student (ተማሪ)</option>
-                    <option value="parent">Parent (ወላጅ)</option>
-                    <option value="teacher">Teacher (መምህር)</option>
-                    <option value="admin">Admin (ዳይሬክተር)</option>
-                </select>
-                <select id="regGrade">
-                    <option value="Grade 9">Grade 9</option>
-                    <option value="Grade 10" selected>Grade 10</option>
-                    <option value="Grade 11">Grade 11</option>
-                    <option value="Grade 12">Grade 12</option>
-                </select>
-                <button class="btn-save" type="submit">Save User to Supabase</button>
-            </div>
-        </form>
-        <div id="regStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
-    </div>
 </div>
 
+<!-- Supabase SDK & Configuration -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 
 <script>
-function toggleGradeSelect() {
-    const role = document.getElementById("regRole").value;
-    const gradeSelect = document.getElementById("regGrade");
-    if (role === "student" || role === "parent") {
-        gradeSelect.style.display = "block";
-    } else {
-        gradeSelect.style.display = "none";
+// AfroMessage API Token (የገባው የነበረው Token)
+const AFROMESSAGE_API_KEY = "EyJhbGciOiJIUzI1NiJ9.eyJpZGVudGlmaWVyIjoiWDRYb3V0YmxaVE9QS0FncW5jNHFFejVlN1VUcWMwNXUiLCJleHAiOjE5NDY5OTk1MzQsImlhdCI6MTc4OTIzMzEzNCwianRpIjoiMWU2ODhjN2QtMGE1ZS00NjY0LWE1ZTgtMjY4ZjJmMTc4MzJmIn0.5VuD3Aay3v1YHI01tFIBPEhaLbHY9PlCEWkLRJ2A3ms";
+
+async function sendAdminSMS() {
+    const targetGroup = document.getElementById('smsTarget').value;
+    const messageContent = document.getElementById('smsMessage').value.trim();
+    const sendBtn = document.getElementById('sendSmsBtn');
+
+    if (!messageContent) {
+        alert("እባክዎን ለወላጆች የሚላከውን መልእክት ያስገቡ!");
+        return;
     }
-}
 
-async function postAnnouncement(e) {
-    e.preventDefault();
-    const title = document.getElementById("annTitle").value.trim();
-    const target = document.getElementById("annTarget").value;
-    const grade = document.getElementById("annGrade").value;
-    const message = document.getElementById("annMessage").value.trim();
-    const status = document.getElementById("annStatusMsg");
-
-    status.style.color = "#102a43";
-    status.textContent = "⏳ Posting...";
+    const originalBtnText = sendBtn.innerHTML;
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> በመላክ ላይ...`;
 
     try {
-        const { error } = await supabaseClient.from('announcements').insert([
-            { title, target_group: target, target_grade: grade, message }
-        ]);
-
-        if (error) throw error;
-
-        status.style.color = "green";
-        status.textContent = "✅ Announcement posted successfully!";
-        document.querySelectorAll("form")[0].reset();
-    } catch (err) {
-        status.style.color = "red";
-        status.textContent = "❌ Error: " + err.message;
-    }
-}
-
-async function registerUser(e) {
-    e.preventDefault();
-    const fullName = document.getElementById("regName").value.trim();
-    const email = document.getElementById("regEmail").value.trim();
-    const password = document.getElementById("regPass").value;
-    const role = document.getElementById("regRole").value;
-    const grade = document.getElementById("regGrade").value;
-    const status = document.getElementById("regStatusMsg");
-
-    status.style.color = "#102a43";
-    status.textContent = "⏳ Creating user...";
-
-    try {
-        const { data, error } = await supabaseClient.auth.signUp({
-            email: email,
-            password: password,
-            options: { data: { full_name: fullName, role: role, grade: grade } }
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-            await supabaseClient.from('profiles').upsert({
-                id: data.user.id,
-                full_name: fullName,
-                email: email,
-                role: role,
-                grade: grade
-            });
+        // 1. ከ Supabase የወላጆችን ስልክ ማምጣት
+        let query = supabaseClient.from('students').select('parent_phone, grade');
+        
+        if (targetGroup !== 'all') {
+            query = query.eq('grade', targetGroup);
         }
 
-        status.style.color = "green";
-        status.textContent = "✅ User created successfully!";
-        document.querySelectorAll("form")[1].reset();
-    } catch (err) {
-        status.style.color = "red";
-        status.textContent = "❌ Error: " + err.message;
-    }
-}
+        const { data: students, error } = await query;
 
-async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "login.html";
+        if (error) throw error;
+
+        if (!students || students.length === 0) {
+            alert("በተመረጠው ክፍል ምንም የወላጅ ስልክ ቁጥር ከዳታቤዝ አልተገኘም!");
+            return;
+        }
+
+        // 2. የስልክ ቁጥሮችን ማጣራት (የተደጋገሙና ባዶ ቁጥሮችን ማስወገድ)
+        const phoneNumbers = [...new Set(
+            students
+                .map(s => s.parent_phone)
+                .filter(phone => phone && phone.trim() !== '')
+        )];
+
+        if (phoneNumbers.length === 0) {
+            alert("ምንም የሚሰራ የወላጅ ስልክ ቁጥር አልተገኘም!");
+            return;
+        }
+
+        // 3. AfroMessage API Call
+        const response = await fetch('https://api.afromessage.com/api/send-bulk', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${AFROMESSAGE_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                to: phoneNumbers,
+                message: messageContent
+            })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok && result.acknowledge === 'success') {
+            alert(`መልእክቱ ለ ${phoneNumbers.length} ወላጆች በስኬት ተላከ!`);
+            document.getElementById('smsMessage').value = '';
+        } else {
+            alert("SMS ሲላክ ችግር ተፈጠረ፦ " + (result.message || "ስህተት ተከሰተ"));
+        }
+
+    } catch (err) {
+        console.error("SMS Error:", err);
+        alert("መረጃዎችን ከዳታቤዝ በማምጣት ወይም SMS በመላክ ላይ ስህተት ተከሰተ!");
+    } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = originalBtnText;
+    }
 }
 </script>
 
