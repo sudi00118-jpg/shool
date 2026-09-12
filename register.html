@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ተማሪ መመዝገቢያ | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background-color: #f4f7f6; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;">
+
+<!-- የተማሪ መመዝገቢያ ፎርም UI -->
+<div style="width: 100%; max-width: 450px; margin: 20px; padding: 25px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h3 style="margin-bottom: 20px; color: #064e3b; text-align: center;">አዲስ ተማሪ መመዝገቢያ</h3>
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155;">የተማሪው ሙሉ ስም</label>
+        <input type="text" id="studentName" placeholder="ምሳሌ፦ አቤል ከበደ" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155;">ክፍል</label>
+        <select id="studentGrade" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+            <option value="9">9ኛ ክፍል</option>
+            <option value="10">10ኛ ክፍል</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155;">የወላጅ ስልክ ቁጥር</label>
+        <input type="tel" id="parentPhone" placeholder="0912345678" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+    </div>
+
+    <button onclick="registerStudent()" id="regBtn" style="width: 100%; background: #047857; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+        ተማሪውን መዝግብ
+    </button>
+</div>
+
+<!-- Supabase SDK & Configuration -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+async function registerStudent() {
+    const studentName = document.getElementById('studentName').value.trim();
+    const grade = document.getElementById('studentGrade').value;
+    let parentPhone = document.getElementById('parentPhone').value.trim();
+    const regBtn = document.getElementById('regBtn');
+
+    if (!studentName || !parentPhone) {
+        alert("እባክዎን የተማሪውን ስም እና የወላጅ ስልክ ቁጥር ሙሉ በሙሉ ያስገቡ!");
+        return;
+    }
+
+    // የስልክ ቁጥር ፎርማት ማስተካከያ
+    if (parentPhone.startsWith("+251")) {
+        parentPhone = "0" + parentPhone.slice(4);
+    } else if (parentPhone.startsWith("251")) {
+        parentPhone = "0" + parentPhone.slice(3);
+    }
+
+    regBtn.disabled = true;
+    regBtn.innerHTML = "በመመዝገብ ላይ...";
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('students')
+            .insert([
+                { 
+                    name: studentName, 
+                    grade: grade, 
+                    parent_phone: parentPhone 
+                }
+            ]);
+
+        if (error) throw error;
+
+        alert(`ተማሪ ${studentName} ከወላጅ ስልክ (${parentPhone}) ጋር በስኬት ተመዝግቧል!`);
+        
+        document.getElementById('studentName').value = '';
+        document.getElementById('parentPhone').value = '';
+
+    } catch (err) {
+        console.error("Registration Error:", err);
+        alert("ተማሪውን በመመዝገብ ላይ ስህተት ተከሰተ፦ " + err.message);
+    } finally {
+        regBtn.disabled = false;
+        regBtn.innerHTML = "ተማሪውን መዝግብ";
+    }
+}
+</script>
+
+</body>
+</html>
