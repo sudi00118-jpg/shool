@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #f4f6f9; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2, h3 { color: #102a43; margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #334155; }
+        input { width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; }
+        .btn-save { background: #102a43; color: white; border: 0; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-back { background: #64748b; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .msg { font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h2>⚙️ Profile Settings</h2>
+            <p>የግል መረጃ ማስተካከያ</p>
+        </div>
+        <button id="backBtn" class="btn-back" onclick="goBack()">🔙 ተመለስ</button>
+    </div>
+
+    <!-- 👤 Basic Info Update -->
+    <div class="card">
+        <h3>👤 Profile Information</h3>
+        <form onsubmit="updateProfile(event)">
+            <div class="form-group">
+                <label>Full Name (ሙሉ ስም)</label>
+                <input id="fullName" type="text" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number (ስልክ ቁጥር)</label>
+                <input id="phone" type="tel" placeholder="0911223344">
+            </div>
+            <button class="btn-save" type="submit">Update Info (መረጃ አዘምን)</button>
+        </form>
+        <div id="profileMsg" class="msg"></div>
+    </div>
+
+    <!-- 🔑 Password Update -->
+    <div class="card">
+        <h3>🔒 Change Password (የይለፍ ቃል መቀየሪያ)</h3>
+        <form onsubmit="updatePassword(event)">
+            <div class="form-group">
+                <label>New Password (አዲስ የይለፍ ቃል)</label>
+                <input id="newPassword" type="password" minlength="6" required placeholder="ቢያንስ 6 ፊደል/ቁጥር">
+            </div>
+            <button class="btn-save" style="background: #2563eb;" type="submit">Change Password (ፓስወርድ ቀይር)</button>
+        </form>
+        <div id="passMsg" class="msg"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+let userRole = 'student';
+
+async function loadUserData() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+    if (profile) {
+        document.getElementById("fullName").value = profile.full_name || '';
+        document.getElementById("phone").value = profile.phone || '';
+        userRole = profile.role;
+    }
+}
+
+async function updateProfile(e) {
+    e.preventDefault();
+    const name = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const msg = document.getElementById("profileMsg");
+
+    msg.style.color = "#102a43";
+    msg.textContent = "⏳ Updating...";
+
+    try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        const { error } = await supabaseClient
+            .from('profiles')
+            .update({ full_name: name, phone: phone })
+            .eq('id', user.id);
+
+        if (error) throw error;
+
+        msg.style.color = "green";
+        msg.textContent = "✅ Profile updated successfully!";
+    } catch (err) {
+        msg.style.color = "red";
+        msg.textContent = "❌ Error: " + err.message;
+    }
+}
+
+async function updatePassword(e) {
+    e.preventDefault();
+    const newPass = document.getElementById("newPassword").value;
+    const msg = document.getElementById("passMsg");
+
+    msg.style.color = "#102a43";
+    msg.textContent = "⏳ Updating password...";
+
+    try {
+        const { error } = await supabaseClient.auth.updateUser({ password: newPass });
+        if (error) throw error;
+
+        msg.style.color = "green";
+        msg.textContent = "✅ Password updated successfully!";
+        document.getElementById("newPassword").value = "";
+    } catch (err) {
+        msg.style.color = "red";
+        msg.textContent = "❌ Error: " + err.message;
+    }
+}
+
+function goBack() {
+    if (userRole === 'admin') window.location.href = "admin.html";
+    else if (userRole === 'teacher') window.location.href = "teacher.html";
+    else window.location.href = "student.html";
+}
+
+loadUserData();
+</script>
+
+</body>
+</html>
