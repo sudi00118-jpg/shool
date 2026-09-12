@@ -13,15 +13,7 @@
         h2 { color: #102a43; margin-bottom: 15px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
         input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; }
-        textarea { grid-column: 1 / -1; resize: vertical; min-height: 80px; }
         .btn-save { background: #102a43; color: white; border: 0; font-weight: bold; cursor: pointer; grid-column: 1 / -1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border-bottom: 1px solid #e4e7ec; padding: 12px; text-align: left; }
-        th { background: #f8fafc; color: #344054; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        .badge-admin { background: #e0f2fe; color: #0369a1; }
-        .badge-teacher { background: #fef3c7; color: #b45309; }
-        .badge-student { background: #dcfce7; color: #15803d; }
         .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
         .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
         .header-btns { display: flex; align-items: center; }
@@ -41,33 +33,54 @@
         </div>
     </div>
 
-    <!-- 📢 Announcement Form Section -->
+    <!-- 📢 Post Announcement -->
     <div class="card">
-        <h2>📢 Post Announcement (ማስታወቂያ መልቀቂያ)</h2>
+        <h2>📢 Post Announcement (ማስታወቂያ መለጠፊያ)</h2>
         <form onsubmit="postAnnouncement(event)">
             <div class="form-grid">
-                <input id="annTitle" placeholder="Topic / ርዕስ (ምሳሌ፦ የስብሰባ ጥሪ)" required>
+                <input id="annTitle" placeholder="Title (ርዕስ)" required>
                 <select id="annTarget" required>
-                    <option value="all">🌐 For Everyone (ለሁሉም - ተማሪ፣ አስተማሪ፣ ወላጅ)</option>
-                    <option value="teachers">👨‍🏫 For Teachers Only (ለአስተማሪዎች ብቻ)</option>
+                    <option value="all">🌍 For Everyone (ለሁሉም)</option>
                     <option value="students">👨‍🎓 For Students Only (ለተማሪዎች ብቻ)</option>
+                    <option value="teachers">👨‍🏫 For Teachers Only (ለተማሪዎች ብቻ)</option>
                 </select>
-                <textarea id="annMessage" placeholder="የማስታወቂያው ዝርዝር መልእክት..." required></textarea>
+                <textarea id="annMessage" placeholder="Message content..." style="grid-column: 1/-1; height: 80px;" required></textarea>
                 <button class="btn-save" type="submit">Post Announcement</button>
             </div>
         </form>
-        <div id="annStatus" style="font-weight: bold; margin-top: 10px;"></div>
+        <div id="annStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
     </div>
 
-    <!-- ➕ Register User Section -->
+    <!-- 📅 Add Timetable Section -->
+    <div class="card">
+        <h2>🗓️ Add Class Timetable (የክፍል ፕሮግራም ማስገቢያ)</h2>
+        <form onsubmit="saveTimetable(event)">
+            <div class="form-grid">
+                <select id="ttDay" required>
+                    <option value="Monday">Monday (ሰኞ)</option>
+                    <option value="Tuesday">Tuesday (ማክሰኞ)</option>
+                    <option value="Wednesday">Wednesday (ረቡዕ)</option>
+                    <option value="Thursday">Thursday (ሐሙስ)</option>
+                    <option value="Friday">Friday (ዓርብ)</option>
+                </select>
+                <input id="ttTime" placeholder="Time (e.g. 2:00 AM - 3:00 AM)" required>
+                <input id="ttSubject" placeholder="Subject (ትምህርት)" required>
+                <input id="ttGrade" placeholder="Grade (e.g. Grade 10)" value="Grade 10" required>
+                <button class="btn-save" type="submit">Save Schedule</button>
+            </div>
+        </form>
+        <div id="ttStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
+    </div>
+
+    <!-- ➕ Add New User -->
     <div class="card">
         <h2>➕ Add New User (አዲስ ሰው መመዝገቢያ)</h2>
-        <form onsubmit="addUser(event)">
+        <form onsubmit="registerUser(event)">
             <div class="form-grid">
-                <input id="fullName" placeholder="Full Name" required>
-                <input id="email" type="email" placeholder="Email Address" required>
-                <input id="password" type="password" placeholder="Password" required>
-                <select id="role">
+                <input id="regName" placeholder="Full Name" required>
+                <input id="regEmail" type="email" placeholder="Email Address" required>
+                <input id="regPass" type="password" placeholder="Password" required>
+                <select id="regRole" required>
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
                     <option value="admin">Admin</option>
@@ -75,24 +88,7 @@
                 <button class="btn-save" type="submit">Save User to Supabase</button>
             </div>
         </form>
-        <div id="statusMsg" style="font-weight: bold; margin-top: 10px;"></div>
-    </div>
-
-    <!-- 📋 Registered Users -->
-    <div class="card">
-        <h2>📋 Registered Users List</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody id="userTable">
-                <tr><td colspan="3">Loading data...</td></tr>
-            </tbody>
-        </table>
+        <div id="regStatusMsg" style="font-weight: bold; margin-top: 10px;"></div>
     </div>
 </div>
 
@@ -100,20 +96,19 @@
 <script src="supabase-config.js"></script>
 
 <script>
-// 1. Post Announcement
 async function postAnnouncement(e) {
     e.preventDefault();
     const title = document.getElementById("annTitle").value.trim();
     const target = document.getElementById("annTarget").value;
     const message = document.getElementById("annMessage").value.trim();
-    const status = document.getElementById("annStatus");
+    const status = document.getElementById("annStatusMsg");
 
     status.style.color = "#102a43";
-    status.textContent = "⏳ Posting announcement...";
+    status.textContent = "⏳ Posting...";
 
     try {
         const { error } = await supabaseClient.from('announcements').insert([
-            { title: title, target_group: target, message: message }
+            { title, target_group: target, message }
         ]);
 
         if (error) throw error;
@@ -127,61 +122,65 @@ async function postAnnouncement(e) {
     }
 }
 
-// 2. Fetch Users
-async function loadUsers() {
-    const tableBody = document.getElementById("userTable");
+async function saveTimetable(e) {
+    e.preventDefault();
+    const day = document.getElementById("ttDay").value;
+    const time_slot = document.getElementById("ttTime").value.trim();
+    const subject = document.getElementById("ttSubject").value.trim();
+    const grade_level = document.getElementById("ttGrade").value.trim();
+    const status = document.getElementById("ttStatusMsg");
+
+    status.style.color = "#102a43";
+    status.textContent = "⏳ Saving timetable...";
+
     try {
-        const { data: users, error } = await supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
+        const { error } = await supabaseClient.from('timetable').insert([
+            { day, time_slot, subject, grade_level }
+        ]);
+
         if (error) throw error;
-        if (!users || users.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='3'>No users found.</td></tr>";
-            return;
-        }
-        tableBody.innerHTML = users.map(u => `
-            <tr>
-                <td><b>${u.full_name || 'N/A'}</b></td>
-                <td>${u.email}</td>
-                <td><span class="badge badge-${u.role}">${u.role.toUpperCase()}</span></td>
-            </tr>
-        `).join('');
+
+        status.style.color = "green";
+        status.textContent = "✅ Class Schedule added successfully!";
+        document.querySelectorAll("form")[1].reset();
     } catch (err) {
-        tableBody.innerHTML = `<tr><td colspan='3' style='color:red;'>Error: ${err.message}</td></tr>`;
+        status.style.color = "red";
+        status.textContent = "❌ Error: " + err.message;
     }
 }
 
-// 3. Register User
-async function addUser(e) {
+async function registerUser(e) {
     e.preventDefault();
-    const name = document.getElementById("fullName").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const role = document.getElementById("role").value;
-    const status = document.getElementById("statusMsg");
+    const fullName = document.getElementById("regName").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPass").value;
+    const role = document.getElementById("regRole").value;
+    const status = document.getElementById("regStatusMsg");
 
     status.style.color = "#102a43";
-    status.textContent = "⏳ Saving user...";
+    status.textContent = "⏳ Creating user...";
 
     try {
         const { data, error } = await supabaseClient.auth.signUp({
             email: email,
             password: password,
-            options: { data: { full_name: name, role: role } }
+            options: { data: { full_name: fullName, role: role } }
         });
 
         if (error) throw error;
 
         if (data.user) {
-            const { error: profileError } = await supabaseClient
-                .from('profiles')
-                .insert([{ id: data.user.id, full_name: name, email: email, role: role }]);
-
-            if (profileError) throw profileError;
+            await supabaseClient.from('profiles').upsert({
+                id: data.user.id,
+                full_name: fullName,
+                email: email,
+                role: role
+            });
         }
 
         status.style.color = "green";
-        status.textContent = "✅ User registered successfully!";
-        document.querySelectorAll("form")[1].reset();
-        loadUsers();
+        status.textContent = "✅ User created successfully!";
+        document.querySelectorAll("form")[2].reset();
     } catch (err) {
         status.style.color = "red";
         status.textContent = "❌ Error: " + err.message;
@@ -192,8 +191,6 @@ async function logout() {
     await supabaseClient.auth.signOut();
     window.location.href = "login.html";
 }
-
-loadUsers();
 </script>
 
 </body>
