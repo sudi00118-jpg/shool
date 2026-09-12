@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login | Future Hope School</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#102a43,#1d4e89);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.login-box{
+    width:100%;
+    max-width:420px;
+    background:white;
+    padding:30px;
+    border-radius:22px;
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    color:#102a43;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#667085;
+    margin-bottom:25px;
+}
+
+.role-buttons{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:25px;
+}
+
+.role{
+    border:2px solid #e4e7ec;
+    background:#f8fafc;
+    padding:12px 5px;
+    border-radius:10px;
+    cursor:pointer;
+    text-align:center;
+    font-weight:bold;
+    color:#344054;
+}
+
+.role.active{
+    background:#102a43;
+    color:white;
+    border-color:#102a43;
+}
+
+.icon{
+    display:block;
+    font-size:25px;
+    margin-bottom:5px;
+}
+
+label{
+    display:block;
+    margin-bottom:7px;
+    color:#344054;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #d0d5dd;
+    border-radius:10px;
+    font-size:16px;
+    margin-bottom:17px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#1d4e89;
+}
+
+.login-btn{
+    width:100%;
+    padding:15px;
+    border:0;
+    border-radius:10px;
+    background:#102a43;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.login-btn:active{
+    transform:scale(.98);
+}
+
+.demo{
+    margin-top:18px;
+    padding:13px;
+    background:#f2f4f7;
+    border-radius:10px;
+    color:#667085;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.message{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    margin-top:22px;
+    color:#667085;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <div class="logo">
+        🏫 Future Hope School
+    </div>
+
+    <div class="subtitle">
+        የነገው ተስፋ — School Portal
+    </div>
+
+
+    <!-- ROLE -->
+
+    <div class="role-buttons">
+
+        <div class="role active"
+             onclick="selectRole('admin',this)">
+
+            <span class="icon">👨‍💼</span>
+            Admin
+
+        </div>
+
+
+        <div class="role"
+             onclick="selectRole('teacher',this)">
+
+            <span class="icon">👨‍🏫</span>
+            Teacher
+
+        </div>
+
+
+        <div class="role"
+             onclick="selectRole('student',this)">
+
+            <span class="icon">👨‍🎓</span>
+            Student
+
+        </div>
+
+    </div>
+
+
+    <form onsubmit="login(event)">
+
+        <label id="usernameLabel">
+            Admin Username
+        </label>
+
+        <input
+            id="username"
+            type="text"
+            placeholder="Enter username"
+            required>
+
+
+        <label>
+            Password
+        </label>
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Enter password"
+            required>
+
+
+        <button
+            class="login-btn"
+            type="submit">
+
+            🔐 Login
+
+        </button>
+
+    </form>
+
+
+    <div class="demo">
+
+        <b>Demo Accounts</b><br><br>
+
+        👨‍💼 Admin: <b>admin / 1234</b><br>
+
+        👨‍🏫 Teacher: <b>teacher / 1234</b><br>
+
+        👨‍🎓 Student: <b>FH-1001 / 1234</b>
+
+    </div>
+
+
+    <div
+        id="message"
+        class="message">
+    </div>
+
+
+    <div class="footer">
+
+        Future Hope School © 2026
+
+    </div>
+
+</div>
+
+
+<script>
+
+let selectedRole = "admin";
+
+
+function selectRole(role, element){
+
+    selectedRole = role;
+
+    document
+        .querySelectorAll(".role")
+        .forEach(function(item){
+
+            item.classList.remove("active");
+
+        });
+
+
+    element.classList.add("active");
+
+
+    let label =
+        document.getElementById("usernameLabel");
+
+    let input =
+        document.getElementById("username");
+
+
+    if(role === "admin"){
+
+        label.textContent =
+            "Admin Username";
+
+        input.placeholder =
+            "Enter admin username";
+
+    }
+
+
+    if(role === "teacher"){
+
+        label.textContent =
+            "Teacher Username";
+
+        input.placeholder =
+            "Enter teacher username";
+
+    }
+
+
+    if(role === "student"){
+
+        label.textContent =
+            "Student ID";
+
+        input.placeholder =
+            "e.g. FH-1001";
+
+    }
+
+}
+
+
+function login(event){
+
+    event.preventDefault();
+
+
+    let username =
+        document.getElementById("username")
+        .value.trim();
+
+
+    let password =
+        document.getElementById("password")
+        .value;
+
+
+    let message =
+        document.getElementById("message");
+
+
+    /* ADMIN */
+
+    if(
+        selectedRole === "admin" &&
+        username === "admin" &&
+        password === "1234"
+    ){
+
+        localStorage.setItem(
+            "futureHopeRole",
+            "admin"
+        );
+
+        window.location.href =
+            "admin.html";
+
+        return;
+    }
+
+
+    /* TEACHER */
+
+    if(
+        selectedRole === "teacher" &&
+        username === "teacher" &&
+        password === "1234"
+    ){
+
+        localStorage.setItem(
+            "futureHopeRole",
+            "teacher"
+        );
+
+        window.location.href =
+            "teacher.html";
+
+        return;
+    }
+
+
+    /* STUDENT */
+
+    if(
+        selectedRole === "student" &&
+        username === "FH-1001" &&
+        password === "1234"
+    ){
+
+        localStorage.setItem(
+            "futureHopeRole",
+            "student"
+        );
+
+        localStorage.setItem(
+            "studentId",
+            username
+        );
+
+        window.location.href =
+            "student.html";
+
+        return;
+    }
+
+
+    message.style.color = "#d92d20";
+
+    message.textContent =
+        "❌ Username or password is incorrect.";
+
+}
+
+</script>
+
+</body>
+</html>

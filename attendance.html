@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Attendance | Future Hope School</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#172033;
+}
+
+.header{
+    background:#102a43;
+    color:white;
+    padding:15px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:19px;
+    font-weight:bold;
+}
+
+.back{
+    background:#f7c948;
+    color:#102a43;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+.container{
+    width:92%;
+    max-width:1100px;
+    margin:auto;
+    padding:28px 0;
+}
+
+.hero{
+    background:linear-gradient(135deg,#102a43,#1d4e89);
+    color:white;
+    padding:28px;
+    border-radius:18px;
+    margin-bottom:25px;
+}
+
+.hero h1{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    margin-bottom:25px;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.card h2{
+    color:#102a43;
+    margin-bottom:20px;
+}
+
+.top{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+input,select{
+    width:100%;
+    padding:13px;
+    border:1px solid #d0d5dd;
+    border-radius:9px;
+    font-size:15px;
+}
+
+button{
+    border:0;
+    padding:10px 14px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.present{
+    background:#d1fadf;
+    color:#027a48;
+}
+
+.absent{
+    background:#fee4e2;
+    color:#b42318;
+}
+
+.late{
+    background:#fff3cd;
+    color:#9a6700;
+}
+
+.save{
+    background:#102a43;
+    color:white;
+    padding:13px 20px;
+    font-size:15px;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:750px;
+}
+
+th,td{
+    padding:13px 10px;
+    border-bottom:1px solid #eaecf0;
+    text-align:left;
+}
+
+th{
+    background:#eef4fa;
+    color:#102a43;
+}
+
+.status{
+    font-weight:bold;
+}
+
+.message{
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    display:none;
+}
+
+.success{
+    background:#d1fadf;
+    color:#027a48;
+}
+
+footer{
+    background:#081c2c;
+    color:#b8c7d9;
+    text-align:center;
+    padding:25px;
+}
+
+@media(max-width:650px){
+
+    .top{
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        font-size:24px;
+    }
+
+    .card{
+        padding:19px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="logo">
+        🏫 Future Hope School
+    </div>
+
+    <a href="teacher.html" class="back">
+        ← Teacher
+    </a>
+
+</header>
+
+
+<main class="container">
+
+
+<section class="hero">
+
+    <h1>
+        ✅ Attendance Management
+    </h1>
+
+    <p>
+        Teacher Portal — Student Attendance
+    </p>
+
+</section>
+
+
+<section class="card">
+
+    <h2>
+        📅 Attendance Date
+    </h2>
+
+    <div class="top">
+
+        <div>
+
+            <label>
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="attendanceDate">
+
+        </div>
+
+
+        <div>
+
+            <label>
+                Class
+            </label>
+
+            <select id="className">
+
+                <option>
+                    Grade 7
+                </option>
+
+                <option>
+                    Grade 8
+                </option>
+
+                <option selected>
+                    Grade 9
+                </option>
+
+                <option>
+                    Grade 10
+                </option>
+
+                <option>
+                    Grade 11
+                </option>
+
+                <option>
+                    Grade 12
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="card">
+
+    <h2>
+        👨‍🎓 Mark Attendance
+    </h2>
+
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Student ID
+                    </th>
+
+                    <th>
+                        Student Name
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="studentList">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <button
+        class="save"
+        onclick="saveAttendance()">
+
+        💾 Save Attendance
+
+    </button>
+
+
+    <div
+        id="message"
+        class="message">
+
+    </div>
+
+</section>
+
+
+<section class="card">
+
+    <h2>
+        📋 Attendance History
+    </h2>
+
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Student ID
+                    </th>
+
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="history">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    🏫 Future Hope School
+    <br>
+    Attendance Management © 2026
+
+</footer>
+
+
+<script>
+
+
+/* TODAY */
+
+let today =
+    new Date().toISOString().split("T")[0];
+
+document
+    .getElementById("attendanceDate")
+    .value = today;
+
+
+/* STUDENTS */
+
+let students =
+    JSON.parse(
+        localStorage.getItem(
+            "futureHopeStudents"
+        )
+    ) || [];
+
+
+/* DEMO STUDENTS */
+
+if(students.length === 0){
+
+    students = [
+
+        {
+            id:"FH-1001",
+            name:"Abebe Kebede"
+        },
+
+        {
+            id:"FH-1002",
+            name:"Hana Mohammed"
+        },
+
+        {
+            id:"FH-1003",
+            name:"Dawit Tesfaye"
+        },
+
+        {
+            id:"FH-1004",
+            name:"Sara Ahmed"
+        }
+
+    ];
+
+}
+
+
+/* SHOW STUDENTS */
+
+function displayStudents(){
+
+    let list =
+        document.getElementById(
+            "studentList"
+        );
+
+    list.innerHTML = "";
+
+
+    students.forEach(function(student,index){
+
+        list.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${student.id}
+            </td>
+
+            <td>
+                ${student.name}
+            </td>
+
+            <td>
+
+                <button
+                    class="present"
+                    onclick="setStatus(${index},'Present')">
+
+                    Present
+
+                </button>
+
+                <button
+                    class="absent"
+                    onclick="setStatus(${index},'Absent')">
+
+                    Absent
+
+                </button>
+
+                <button
+                    class="late"
+                    onclick="setStatus(${index},'Late')">
+
+                    Late
+
+                </button>
+
+                <span
+                    id="status-${index}"
+                    class="status">
+
+                    Not Marked
+
+                </span>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* STATUS */
+
+let attendanceStatus = {};
+
+
+function setStatus(index,status){
+
+    attendanceStatus[index] = status;
+
+    let element =
+        document.getElementById(
+            "status-" + index
+        );
+
+    element.textContent = status;
+
+}
+
+
+/* SAVE */
+
+function saveAttendance(){
+
+    let date =
+        document.getElementById(
+            "attendanceDate"
+        ).value;
+
+
+    if(!date){
+
+        alert(
+            "Please select a date."
+        );
+
+        return;
+    }
+
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "futureHopeAttendance"
+            )
+        ) || [];
+
+
+    students.forEach(function(student,index){
+
+        if(attendanceStatus[index]){
+
+            history.push({
+
+                date:date,
+
+                id:student.id,
+
+                name:student.name,
+
+                status:
+                    attendanceStatus[index]
+
+            });
+
+        }
+
+    });
+
+
+    localStorage.setItem(
+        "futureHopeAttendance",
+        JSON.stringify(history)
+    );
+
+
+    document.getElementById(
+        "message"
+    ).textContent =
+        "✅ Attendance saved successfully!";
+
+
+    document.getElementById(
+        "message"
+    ).className =
+        "message success";
+
+
+    document.getElementById(
+        "message"
+    ).style.display = "block";
+
+
+    displayHistory();
+
+}
+
+
+/* HISTORY */
+
+function displayHistory(){
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "futureHopeAttendance"
+            )
+        ) || [];
+
+
+    let table =
+        document.getElementById(
+            "history"
+        );
+
+
+    table.innerHTML = "";
+
+
+    history
+        .slice()
+        .reverse()
+        .slice(0,30)
+        .forEach(function(item){
+
+            table.innerHTML += `
+
+            <tr>
+
+                <td>
+                    ${item.date}
+                </td>
+
+                <td>
+                    ${item.id}
+                </td>
+
+                <td>
+                    ${item.name}
+                </td>
+
+                <td>
+                    ${item.status}
+                </td>
+
+            </tr>
+
+            `;
+
+        });
+
+}
+
+
+displayStudents();
+
+displayHistory();
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Results Management | Future Hope</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#172033;
+}
+
+.header{
+    background:#102a43;
+    color:white;
+    padding:15px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:19px;
+    font-weight:bold;
+}
+
+.back{
+    background:#f7c948;
+    color:#102a43;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+.container{
+    width:92%;
+    max-width:1000px;
+    margin:auto;
+    padding:28px 0;
+}
+
+.hero{
+    background:linear-gradient(135deg,#102a43,#1d4e89);
+    color:white;
+    padding:28px;
+    border-radius:18px;
+    margin-bottom:25px;
+}
+
+.hero h1{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    margin-bottom:25px;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.card h2{
+    color:#102a43;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin:15px 0 7px;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    border:1px solid #d0d5dd;
+    border-radius:10px;
+    font-size:16px;
+    background:white;
+}
+
+button{
+    border:0;
+    background:#102a43;
+    color:white;
+    padding:14px 22px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4e89;
+}
+
+.message{
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    display:none;
+}
+
+.success{
+    background:#d1fadf;
+    color:#027a48;
+}
+
+.error{
+    background:#fee4e2;
+    color:#b42318;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:600px;
+}
+
+th,td{
+    padding:13px;
+    border-bottom:1px solid #eaecf0;
+    text-align:left;
+}
+
+th{
+    background:#eef4fa;
+    color:#102a43;
+}
+
+.grade{
+    background:#d1fadf;
+    color:#027a48;
+    padding:5px 10px;
+    border-radius:20px;
+    font-weight:bold;
+}
+
+.delete{
+    background:#d92d20;
+    padding:8px 12px;
+    margin:0;
+    font-size:13px;
+}
+
+footer{
+    background:#081c2c;
+    color:#b8c7d9;
+    text-align:center;
+    padding:25px;
+    margin-top:20px;
+}
+
+@media(max-width:600px){
+    .hero h1{
+        font-size:24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        🏫 Future Hope School
+    </div>
+
+    <a href="teacher.html" class="back">
+        ← Back
+    </a>
+
+</header>
+
+
+<main class="container">
+
+    <section class="hero">
+        <h1>📊 Results Management</h1>
+        <p>Teacher Portal — Student Results</p>
+    </section>
+
+
+    <!-- ENTER RESULT -->
+
+    <section class="card">
+
+        <h2>➕ Enter Student Result</h2>
+
+        <label>Student ID</label>
+
+        <input
+            type="text"
+            id="studentId"
+            placeholder="e.g. FH-1001"
+        >
+
+
+        <label>Student Name</label>
+
+        <input
+            type="text"
+            id="studentName"
+            placeholder="Student full name"
+        >
+
+
+        <label>Grade</label>
+
+        <select id="grade">
+            <option value="">Select Grade</option>
+            <option>Grade 7</option>
+            <option>Grade 8</option>
+            <option>Grade 9</option>
+            <option>Grade 10</option>
+            <option>Grade 11</option>
+            <option>Grade 12</option>
+        </select>
+
+
+        <label>Subject</label>
+
+        <select id="subject">
+            <option value="">Select Subject</option>
+            <option>Mathematics</option>
+            <option>English</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+            <option>Amharic</option>
+            <option>History</option>
+            <option>Geography</option>
+        </select>
+
+
+        <label>Score / 100</label>
+
+        <input
+            type="number"
+            id="score"
+            min="0"
+            max="100"
+            placeholder="Enter score"
+        >
+
+
+        <button onclick="saveResult()">
+            💾 Save Result
+        </button>
+
+
+        <div id="message" class="message"></div>
+
+    </section>
+
+
+    <!-- RESULT LIST -->
+
+    <section class="card">
+
+        <h2>📋 Saved Results</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Grade</th>
+                        <th>Subject</th>
+                        <th>Score</th>
+                        <th>Grade</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="resultTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    🏫 Future Hope School
+    <br>
+    Results Management © 2026
+
+</footer>
+
+
+<script>
+
+let results =
+    JSON.parse(
+        localStorage.getItem("futureHopeResults")
+    ) || [];
+
+
+function calculateGrade(score){
+
+    if(score >= 90) return "A+";
+    if(score >= 85) return "A";
+    if(score >= 80) return "A-";
+    if(score >= 75) return "B+";
+    if(score >= 70) return "B";
+    if(score >= 65) return "B-";
+    if(score >= 60) return "C+";
+    if(score >= 50) return "C";
+    if(score >= 40) return "D";
+
+    return "F";
+}
+
+
+function saveResult(){
+
+    let id =
+        document.getElementById("studentId").value.trim();
+
+    let name =
+        document.getElementById("studentName").value.trim();
+
+    let grade =
+        document.getElementById("grade").value;
+
+    let subject =
+        document.getElementById("subject").value;
+
+    let score =
+        Number(document.getElementById("score").value);
+
+
+    if(!id || !name || !grade || !subject ||
+       document.getElementById("score").value === ""){
+
+        showMessage(
+            "❌ Please fill in all fields.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(score < 0 || score > 100){
+
+        showMessage(
+            "❌ Score must be between 0 and 100.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    let result = {
+
+        id:id,
+        name:name,
+        grade:grade,
+        subject:subject,
+        score:score,
+        letterGrade:calculateGrade(score)
+
+    };
+
+
+    results.push(result);
+
+
+    localStorage.setItem(
+        "futureHopeResults",
+        JSON.stringify(results)
+    );
+
+
+    showMessage(
+        "✅ Result saved successfully!",
+        "success"
+    );
+
+
+    document.getElementById("studentId").value = "";
+    document.getElementById("studentName").value = "";
+    document.getElementById("grade").value = "";
+    document.getElementById("subject").value = "";
+    document.getElementById("score").value = "";
+
+
+    displayResults();
+
+}
+
+
+function displayResults(){
+
+    let table =
+        document.getElementById("resultTable");
+
+    table.innerHTML = "";
+
+
+    results.forEach(function(result,index){
+
+        table.innerHTML += `
+
+        <tr>
+
+            <td>${result.id}</td>
+
+            <td>${result.name}</td>
+
+            <td>${result.grade}</td>
+
+            <td>${result.subject}</td>
+
+            <td>${result.score}</td>
+
+            <td>
+                <span class="grade">
+                    ${result.letterGrade}
+                </span>
+            </td>
+
+            <td>
+                <button
+                    class="delete"
+                    onclick="deleteResult(${index})">
+                    Delete
+                </button>
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+function deleteResult(index){
+
+    if(confirm("Delete this result?")){
+
+        results.splice(index,1);
+
+        localStorage.setItem(
+            "futureHopeResults",
+            JSON.stringify(results)
+        );
+
+        displayResults();
+
+    }
+
+}
+
+
+function showMessage(text,type){
+
+    let message =
+        document.getElementById("message");
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+
+    message.style.display = "block";
+
+
+    setTimeout(function(){
+
+        message.style.display = "none";
+
+    },3000);
+
+}
+
+
+displayResults();
+
+</script>
+
+</body>
+</html>

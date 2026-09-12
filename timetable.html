@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Hope | Timetable</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7f6;
+    color:#17221d;
+}
+
+header{
+    background:#075e3d;
+    color:white;
+    padding:18px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.logo span{
+    display:block;
+    font-size:12px;
+    font-weight:normal;
+    opacity:.85;
+    margin-top:3px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:12px;
+    font-size:14px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:25px 15px;
+}
+
+.title{
+    margin-bottom:20px;
+}
+
+.title h1{
+    color:#075e3d;
+    margin-bottom:5px;
+}
+
+.title p{
+    color:#66736d;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 5px 18px rgba(0,0,0,.07);
+    margin-bottom:22px;
+}
+
+.card h2{
+    color:#075e3d;
+    margin-bottom:15px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+
+label{
+    font-size:13px;
+    font-weight:bold;
+    display:block;
+    margin-bottom:6px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #d5ddd9;
+    border-radius:8px;
+    outline:none;
+    background:white;
+}
+
+input:focus,select:focus{
+    border-color:#075e3d;
+}
+
+button{
+    border:0;
+    padding:12px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.add-btn{
+    background:#075e3d;
+    color:white;
+    margin-top:15px;
+}
+
+.add-btn:hover{
+    background:#064d32;
+}
+
+.filter-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    padding:12px 9px;
+    border-bottom:1px solid #e5ebe8;
+    text-align:left;
+    font-size:14px;
+}
+
+th{
+    background:#075e3d;
+    color:white;
+}
+
+.delete{
+    background:#c62828;
+    color:white;
+    padding:7px 10px;
+    font-size:12px;
+}
+
+.empty{
+    text-align:center;
+    padding:25px;
+    color:#777;
+}
+
+.week-title{
+    margin-top:5px;
+    margin-bottom:12px;
+    color:#075e3d;
+}
+
+.badge{
+    display:inline-block;
+    background:#e7f4ee;
+    color:#075e3d;
+    padding:5px 8px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+footer{
+    background:#12352a;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:30px;
+    font-size:13px;
+}
+
+@media(max-width:750px){
+    .form-grid,
+    .filter-grid{
+        grid-template-columns:1fr;
+    }
+
+    table{
+        min-width:750px;
+    }
+
+    .table-wrap{
+        overflow-x:auto;
+    }
+
+    nav{
+        width:100%;
+    }
+
+    nav a{
+        margin:0 8px 0 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        Future Hope School
+        <span>የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት</span>
+    </div>
+
+    <nav>
+        <a href="admin.html">Admin</a>
+        <a href="teacher.html">Teacher</a>
+        <a href="student.html">Student</a>
+        <a href="index.html">Home</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <div class="title">
+        <h1>📅 School Timetable</h1>
+        <p>የክፍል እና የትምህርት ሳምንታዊ የጊዜ ሰሌዳ</p>
+    </div>
+
+    <!-- ADD TIMETABLE -->
+    <div class="card">
+        <h2>➕ Add Schedule</h2>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Grade</label>
+                <select id="grade">
+                    <option value="">Select Grade</option>
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Section</label>
+                <select id="section">
+                    <option value="">Select Section</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Day</label>
+                <select id="day">
+                    <option value="">Select Day</option>
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Time</label>
+                <select id="time">
+                    <option value="">Select Time</option>
+                    <option>08:00 - 09:00</option>
+                    <option>09:00 - 10:00</option>
+                    <option>10:00 - 11:00</option>
+                    <option>11:00 - 12:00</option>
+                    <option>01:30 - 02:30</option>
+                    <option>02:30 - 03:30</option>
+                    <option>03:30 - 04:30</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Subject</label>
+                <select id="subject">
+                    <option value="">Select Subject</option>
+                    <option>Mathematics</option>
+                    <option>English</option>
+                    <option>Physics</option>
+                    <option>Chemistry</option>
+                    <option>Biology</option>
+                    <option>Amharic</option>
+                    <option>History</option>
+                    <option>Geography</option>
+                    <option>ICT</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Teacher</label>
+                <input id="teacher" type="text" placeholder="Teacher name">
+            </div>
+
+        </div>
+
+        <button class="add-btn" onclick="addSchedule()">
+            ➕ Add Schedule
+        </button>
+    </div>
+
+    <!-- FILTER -->
+    <div class="card">
+        <h2>🔎 Filter Timetable</h2>
+
+        <div class="filter-grid">
+
+            <div>
+                <label>Grade</label>
+                <select id="filterGrade" onchange="displaySchedules()">
+                    <option value="">All Grades</option>
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Section</label>
+                <select id="filterSection" onchange="displaySchedules()">
+                    <option value="">All Sections</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Day</label>
+                <select id="filterDay" onchange="displaySchedules()">
+                    <option value="">All Days</option>
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCHEDULE TABLE -->
+    <div class="card">
+        <h2>📋 Timetable Records</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Section</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="scheduleTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- WEEKLY VIEW -->
+    <div class="card">
+        <h2>🗓️ Weekly View</h2>
+
+        <div id="weeklyView"></div>
+    </div>
+
+</div>
+
+<footer>
+    © 2026 Future Hope Secondary School | የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት
+</footer>
+
+<script>
+
+let schedules =
+    JSON.parse(localStorage.getItem("futureHopeTimetable")) || [];
+
+
+/* ADD SCHEDULE */
+function addSchedule(){
+
+    const grade = document.getElementById("grade").value;
+    const section = document.getElementById("section").value;
+    const day = document.getElementById("day").value;
+    const time = document.getElementById("time").value;
+    const subject = document.getElementById("subject").value;
+    const teacher = document.getElementById("teacher").value.trim();
+
+    if(!grade || !section || !day || !time || !subject || !teacher){
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const newSchedule = {
+        id: Date.now(),
+        grade,
+        section,
+        day,
+        time,
+        subject,
+        teacher
+    };
+
+    schedules.push(newSchedule);
+
+    localStorage.setItem(
+        "futureHopeTimetable",
+        JSON.stringify(schedules)
+    );
+
+    alert("Schedule added successfully!");
+
+    document.getElementById("grade").value = "";
+    document.getElementById("section").value = "";
+    document.getElementById("day").value = "";
+    document.getElementById("time").value = "";
+    document.getElementById("subject").value = "";
+    document.getElementById("teacher").value = "";
+
+    displaySchedules();
+}
+
+
+/* DISPLAY */
+function displaySchedules(){
+
+    const table = document.getElementById("scheduleTable");
+
+    const filterGrade =
+        document.getElementById("filterGrade").value;
+
+    const filterSection =
+        document.getElementById("filterSection").value;
+
+    const filterDay =
+        document.getElementById("filterDay").value;
+
+    let filtered = schedules.filter(item => {
+
+        return (!filterGrade || item.grade === filterGrade) &&
+               (!filterSection || item.section === filterSection) &&
+               (!filterDay || item.day === filterDay);
+
+    });
+
+    filtered.sort((a,b) => {
+
+        const days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+        ];
+
+        return days.indexOf(a.day) - days.indexOf(b.day);
+
+    });
+
+    if(filtered.length === 0){
+
+        table.innerHTML =
+            `<tr>
+                <td colspan="7" class="empty">
+                    No timetable records found.
+                </td>
+            </tr>`;
+
+    }else{
+
+        table.innerHTML = filtered.map(item => `
+
+            <tr>
+                <td><span class="badge">${item.grade}</span></td>
+                <td>${item.section}</td>
+                <td>${item.day}</td>
+                <td>${item.time}</td>
+                <td>${item.subject}</td>
+                <td>${item.teacher}</td>
+
+                <td>
+                    <button class="delete"
+                    onclick="deleteSchedule(${item.id})">
+                    Delete
+                    </button>
+                </td>
+            </tr>
+
+        `).join("");
+
+    }
+
+    displayWeekly(filtered);
+}
+
+
+/* DELETE */
+function deleteSchedule(id){
+
+    if(!confirm("Delete this timetable record?")){
+        return;
+    }
+
+    schedules =
+        schedules.filter(item => item.id !== id);
+
+    localStorage.setItem(
+        "futureHopeTimetable",
+        JSON.stringify(schedules)
+    );
+
+    displaySchedules();
+}
+
+
+/* WEEKLY VIEW */
+function displayWeekly(data){
+
+    const box =
+        document.getElementById("weeklyView");
+
+    if(data.length === 0){
+
+        box.innerHTML =
+            `<div class="empty">
+                No weekly timetable available.
+            </div>`;
+
+        return;
+    }
+
+    const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+    ];
+
+    let html = "";
+
+    days.forEach(day => {
+
+        const dayItems =
+            data.filter(item => item.day === day);
+
+        if(dayItems.length > 0){
+
+            html += `
+                <h3 class="week-title">
+                    ${day}
+                </h3>
+
+                <div class="table-wrap">
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Grade</th>
+                            <th>Section</th>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Teacher</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+            `;
+
+            dayItems.forEach(item => {
+
+                html += `
+                    <tr>
+                        <td>${item.grade}</td>
+                        <td>${item.section}</td>
+                        <td>${item.time}</td>
+                        <td>${item.subject}</td>
+                        <td>${item.teacher}</td>
+                    </tr>
+                `;
+
+            });
+
+            html += `
+                    </tbody>
+                </table>
+                </div>
+            `;
+        }
+
+    });
+
+    box.innerHTML = html;
+}
+
+
+/* START */
+displaySchedules();
+
+</script>
+
+</body>
+</html>

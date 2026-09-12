@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teachers Management | Future Hope</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#172033;
+}
+
+.header{
+    background:#102a43;
+    color:white;
+    padding:17px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:19px;
+    font-weight:bold;
+}
+
+.back{
+    background:#f7c948;
+    color:#102a43;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.container{
+    width:90%;
+    max-width:1100px;
+    margin:auto;
+    padding:28px 0;
+}
+
+.title{
+    background:linear-gradient(135deg,#102a43,#1d4e89);
+    color:white;
+    padding:27px;
+    border-radius:15px;
+    margin-bottom:25px;
+}
+
+.title h1{
+    margin-bottom:8px;
+    font-size:30px;
+}
+
+.box{
+    background:white;
+    padding:25px;
+    border-radius:14px;
+    margin-bottom:25px;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.box h2{
+    color:#102a43;
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    color:#344054;
+    margin-bottom:7px;
+}
+
+input,select{
+    width:100%;
+    padding:13px;
+    border:1px solid #d0d5dd;
+    border-radius:8px;
+    font-size:15px;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border-color:#1d4e89;
+}
+
+.save{
+    margin-top:18px;
+    padding:13px 22px;
+    border:0;
+    border-radius:8px;
+    background:#102a43;
+    color:white;
+    font-weight:bold;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.save:hover{
+    background:#1d4e89;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
+}
+
+th,td{
+    padding:13px 10px;
+    border-bottom:1px solid #eaecf0;
+    text-align:left;
+}
+
+th{
+    background:#eef4fa;
+    color:#102a43;
+}
+
+.delete{
+    border:0;
+    background:#d92d20;
+    color:white;
+    padding:7px 11px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.badge{
+    background:#d1fadf;
+    color:#027a48;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+}
+
+.empty{
+    text-align:center;
+    color:#667085;
+    padding:20px;
+}
+
+@media(max-width:650px){
+
+    .container{
+        width:92%;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .box{
+        padding:19px;
+    }
+
+    .title h1{
+        font-size:24px;
+    }
+
+    .logo{
+        font-size:16px;
+    }
+
+    .back{
+        padding:9px 12px;
+        font-size:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        🏫 Future Hope School
+    </div>
+
+    <a href="admin.html" class="back">
+        ← Admin
+    </a>
+
+</header>
+
+
+<div class="container">
+
+    <div class="title">
+
+        <h1>👨‍🏫 Teachers Management</h1>
+
+        <p>
+            የመምህራን መመዝገቢያና ማስተዳደሪያ
+        </p>
+
+    </div>
+
+
+    <!-- ADD TEACHER -->
+
+    <div class="box">
+
+        <h2>➕ Add New Teacher</h2>
+
+        <form id="teacherForm">
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Teacher ID</label>
+
+                    <input
+                        type="text"
+                        id="teacherId"
+                        placeholder="e.g. T-1001"
+                        required
+                    >
+                </div>
+
+
+                <div>
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        id="teacherName"
+                        placeholder="Teacher full name"
+                        required
+                    >
+                </div>
+
+
+                <div>
+                    <label>Subject</label>
+
+                    <select id="subject" required>
+
+                        <option value="">
+                            Select Subject
+                        </option>
+
+                        <option>Mathematics</option>
+                        <option>English</option>
+                        <option>Physics</option>
+                        <option>Chemistry</option>
+                        <option>Biology</option>
+                        <option>Amharic</option>
+                        <option>History</option>
+                        <option>Geography</option>
+                        <option>ICT</option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+                    <label>Class / Grade</label>
+
+                    <select id="grade" required>
+
+                        <option value="">
+                            Select Grade
+                        </option>
+
+                        <option>Grade 1</option>
+                        <option>Grade 2</option>
+                        <option>Grade 3</option>
+                        <option>Grade 4</option>
+                        <option>Grade 5</option>
+                        <option>Grade 6</option>
+                        <option>Grade 7</option>
+                        <option>Grade 8</option>
+                        <option>Grade 9</option>
+                        <option>Grade 10</option>
+                        <option>Grade 11</option>
+                        <option>Grade 12</option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+                    <label>Phone</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="09XXXXXXXX"
+                    >
+                </div>
+
+
+                <div>
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Teacher password"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <button class="save" type="submit">
+                💾 Save Teacher
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- TEACHER LIST -->
+
+    <div class="box">
+
+        <h2>📋 Teacher List</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Subject</th>
+                        <th>Grade</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="teacherList"></tbody>
+
+            </table>
+
+        </div>
+
+        <div id="emptyMessage" class="empty">
+            No teachers registered yet.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let teachers =
+JSON.parse(
+    localStorage.getItem("futureHopeTeachers")
+) || [];
+
+
+function displayTeachers(){
+
+    const list =
+        document.getElementById("teacherList");
+
+    const empty =
+        document.getElementById("emptyMessage");
+
+
+    list.innerHTML = "";
+
+
+    if(teachers.length === 0){
+
+        empty.style.display = "block";
+
+        return;
+    }
+
+
+    empty.style.display = "none";
+
+
+    teachers.forEach(function(teacher,index){
+
+        list.innerHTML += `
+
+        <tr>
+
+            <td>${teacher.id}</td>
+
+            <td>${teacher.name}</td>
+
+            <td>${teacher.subject}</td>
+
+            <td>${teacher.grade}</td>
+
+            <td>${teacher.phone || "-"}</td>
+
+            <td>
+                <span class="badge">
+                    Active
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="delete"
+                    onclick="deleteTeacher(${index})">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+document
+.getElementById("teacherForm")
+.addEventListener("submit",function(e){
+
+    e.preventDefault();
+
+
+    const teacher = {
+
+        id:
+        document.getElementById("teacherId").value.trim(),
+
+        name:
+        document.getElementById("teacherName").value.trim(),
+
+        subject:
+        document.getElementById("subject").value,
+
+        grade:
+        document.getElementById("grade").value,
+
+        phone:
+        document.getElementById("phone").value.trim(),
+
+        password:
+        document.getElementById("password").value
+
+    };
+
+
+    /* CHECK DUPLICATE ID */
+
+    const exists =
+        teachers.some(
+            t => t.id === teacher.id
+        );
+
+
+    if(exists){
+
+        alert(
+            "❌ This Teacher ID already exists!"
+        );
+
+        return;
+    }
+
+
+    teachers.push(teacher);
+
+
+    localStorage.setItem(
+        "futureHopeTeachers",
+        JSON.stringify(teachers)
+    );
+
+
+    alert(
+        "✅ Teacher successfully added!"
+    );
+
+
+    document
+        .getElementById("teacherForm")
+        .reset();
+
+
+    displayTeachers();
+
+});
+
+
+function deleteTeacher(index){
+
+    if(
+        confirm(
+            "Are you sure you want to delete this teacher?"
+        )
+    ){
+
+        teachers.splice(index,1);
+
+
+        localStorage.setItem(
+            "futureHopeTeachers",
+            JSON.stringify(teachers)
+        );
+
+
+        displayTeachers();
+
+    }
+
+}
+
+
+displayTeachers();
+
+</script>
+
+</body>
+</html>

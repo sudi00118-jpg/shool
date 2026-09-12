@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Future Hope | Fees Management</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7f6;
+    color:#17221d;
+}
+
+header{
+    background:#075e3d;
+    color:white;
+    padding:18px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.logo span{
+    display:block;
+    font-size:12px;
+    font-weight:normal;
+    opacity:.85;
+    margin-top:4px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:12px;
+    font-size:14px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:25px 15px;
+}
+
+.title{
+    margin-bottom:20px;
+}
+
+.title h1{
+    color:#075e3d;
+    margin-bottom:5px;
+}
+
+.title p{
+    color:#66736d;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 5px 18px rgba(0,0,0,.07);
+    margin-bottom:22px;
+}
+
+.card h2{
+    color:#075e3d;
+    margin-bottom:16px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #d5ddd9;
+    border-radius:8px;
+    outline:none;
+    background:white;
+}
+
+input:focus,
+select:focus{
+    border-color:#075e3d;
+}
+
+button{
+    border:0;
+    border-radius:8px;
+    padding:11px 16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.add-btn{
+    background:#075e3d;
+    color:white;
+    margin-top:16px;
+}
+
+.add-btn:hover{
+    background:#064d32;
+}
+
+.delete{
+    background:#c62828;
+    color:white;
+    padding:7px 10px;
+    font-size:12px;
+}
+
+.paid{
+    background:#e5f6ed;
+    color:#087443;
+    padding:5px 9px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+    padding:5px 9px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.summary-box{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 5px 18px rgba(0,0,0,.07);
+}
+
+.summary-box h3{
+    color:#68746f;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.summary-box strong{
+    font-size:25px;
+    color:#075e3d;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th,td{
+    padding:12px 9px;
+    border-bottom:1px solid #e5ebe8;
+    text-align:left;
+    font-size:14px;
+}
+
+th{
+    background:#075e3d;
+    color:white;
+}
+
+.empty{
+    text-align:center;
+    padding:25px;
+    color:#777;
+}
+
+footer{
+    background:#12352a;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:30px;
+    font-size:13px;
+}
+
+@media(max-width:750px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .table-wrap{
+        overflow-x:auto;
+    }
+
+    table{
+        min-width:850px;
+    }
+
+    nav{
+        width:100%;
+    }
+
+    nav a{
+        margin:0 8px 0 0;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        Future Hope School
+        <span>የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት</span>
+    </div>
+
+    <nav>
+        <a href="admin.html">Admin</a>
+        <a href="teacher.html">Teacher</a>
+        <a href="student.html">Student</a>
+        <a href="index.html">Home</a>
+    </nav>
+
+</header>
+
+
+<div class="container">
+
+    <div class="title">
+
+        <h1>💰 Fees Management</h1>
+
+        <p>
+            የተማሪዎች የትምህርት ክፍያ መመዝገቢያና ክትትል
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-box">
+            <h3>Total Payments</h3>
+            <strong id="totalPayments">0 ETB</strong>
+        </div>
+
+        <div class="summary-box">
+            <h3>Paid Records</h3>
+            <strong id="paidCount">0</strong>
+        </div>
+
+        <div class="summary-box">
+            <h3>Pending Records</h3>
+            <strong id="pendingCount">0</strong>
+        </div>
+
+    </div>
+
+
+    <!-- ADD PAYMENT -->
+
+    <div class="card">
+
+        <h2>➕ Add Fee Payment</h2>
+
+        <div class="form-grid">
+
+            <div>
+
+                <label>Student ID</label>
+
+                <input
+                    id="studentId"
+                    type="text"
+                    placeholder="FH-1001"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Student Name</label>
+
+                <input
+                    id="studentName"
+                    type="text"
+                    placeholder="Student full name"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Grade</label>
+
+                <select id="grade">
+
+                    <option value="">
+                        Select Grade
+                    </option>
+
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Payment Type</label>
+
+                <select id="paymentType">
+
+                    <option value="">
+                        Select Payment
+                    </option>
+
+                    <option>Tuition Fee</option>
+                    <option>Registration Fee</option>
+                    <option>Exam Fee</option>
+                    <option>Library Fee</option>
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Amount (ETB)</label>
+
+                <input
+                    id="amount"
+                    type="number"
+                    placeholder="1000"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Status</label>
+
+                <select id="status">
+
+                    <option value="Paid">
+                        Paid
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Payment Date</label>
+
+                <input
+                    id="paymentDate"
+                    type="date"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="add-btn"
+            onclick="addPayment()"
+        >
+            💾 Save Payment
+        </button>
+
+    </div>
+
+
+    <!-- PAYMENT TABLE -->
+
+    <div class="card">
+
+        <h2>📋 Payment Records</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Grade</th>
+                        <th>Payment</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="paymentTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    © 2026 Future Hope Secondary School |
+    የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት
+
+</footer>
+
+
+<script>
+
+let payments =
+    JSON.parse(
+        localStorage.getItem("futureHopePayments")
+    ) || [];
+
+
+/* ADD PAYMENT */
+
+function addPayment(){
+
+    const studentId =
+        document.getElementById("studentId").value.trim();
+
+    const studentName =
+        document.getElementById("studentName").value.trim();
+
+    const grade =
+        document.getElementById("grade").value;
+
+    const paymentType =
+        document.getElementById("paymentType").value;
+
+    const amount =
+        Number(
+            document.getElementById("amount").value
+        );
+
+    const status =
+        document.getElementById("status").value;
+
+    const paymentDate =
+        document.getElementById("paymentDate").value;
+
+
+    if(
+        !studentId ||
+        !studentName ||
+        !grade ||
+        !paymentType ||
+        !amount ||
+        !paymentDate
+    ){
+
+        alert("Please fill in all fields.");
+
+        return;
+    }
+
+
+    const payment = {
+
+        id:Date.now(),
+
+        studentId:studentId,
+
+        studentName:studentName,
+
+        grade:grade,
+
+        paymentType:paymentType,
+
+        amount:amount,
+
+        status:status,
+
+        paymentDate:paymentDate
+
+    };
+
+
+    payments.push(payment);
+
+
+    localStorage.setItem(
+        "futureHopePayments",
+        JSON.stringify(payments)
+    );
+
+
+    alert("Payment saved successfully!");
+
+
+    document.getElementById("studentId").value="";
+    document.getElementById("studentName").value="";
+    document.getElementById("grade").value="";
+    document.getElementById("paymentType").value="";
+    document.getElementById("amount").value="";
+    document.getElementById("paymentDate").value="";
+
+
+    displayPayments();
+
+}
+
+
+/* DISPLAY */
+
+function displayPayments(){
+
+    const table =
+        document.getElementById("paymentTable");
+
+
+    if(payments.length === 0){
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="empty"
+                >
+
+                    No payment records found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+    else{
+
+        table.innerHTML =
+
+            payments.map(payment => `
+
+                <tr>
+
+                    <td>
+                        ${payment.studentId}
+                    </td>
+
+                    <td>
+                        ${payment.studentName}
+                    </td>
+
+                    <td>
+                        ${payment.grade}
+                    </td>
+
+                    <td>
+                        ${payment.paymentType}
+                    </td>
+
+                    <td>
+                        ${payment.amount.toLocaleString()} ETB
+                    </td>
+
+                    <td>
+
+                        ${
+                            payment.status === "Paid"
+
+                            ?
+
+                            `<span class="paid">
+                                Paid
+                             </span>`
+
+                            :
+
+                            `<span class="pending">
+                                Pending
+                             </span>`
+                        }
+
+                    </td>
+
+                    <td>
+                        ${payment.paymentDate}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="delete"
+                            onclick="deletePayment(${payment.id})"
+                        >
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `).join("");
+
+    }
+
+
+    updateSummary();
+
+}
+
+
+/* DELETE */
+
+function deletePayment(id){
+
+    if(
+        !confirm(
+            "Delete this payment record?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    payments =
+        payments.filter(
+            payment => payment.id !== id
+        );
+
+
+    localStorage.setItem(
+        "futureHopePayments",
+        JSON.stringify(payments)
+    );
+
+
+    displayPayments();
+
+}
+
+
+/* SUMMARY */
+
+function updateSummary(){
+
+    const paid =
+        payments.filter(
+            p => p.status === "Paid"
+        );
+
+
+    const pending =
+        payments.filter(
+            p => p.status === "Pending"
+        );
+
+
+    const total =
+        paid.reduce(
+            (sum,p) => sum + Number(p.amount),
+            0
+        );
+
+
+    document.getElementById(
+        "totalPayments"
+    ).textContent =
+        total.toLocaleString() + " ETB";
+
+
+    document.getElementById(
+        "paidCount"
+    ).textContent =
+        paid.length;
+
+
+    document.getElementById(
+        "pendingCount"
+    ).textContent =
+        pending.length;
+
+}
+
+
+/* DEFAULT DATE */
+
+document.getElementById(
+    "paymentDate"
+).value =
+    new Date().toISOString().split("T")[0];
+
+
+/* START */
+
+displayPayments();
+
+</script>
+
+</body>
+</html>
