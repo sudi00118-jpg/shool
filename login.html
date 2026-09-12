@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>መግቢያ (Login) | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
-    <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -19,7 +18,9 @@
         .form-control:focus { border-color: #047857; }
         .btn-login { width: 100%; background: #047857; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; transition: 0.3s; }
         .btn-login:hover { background: #065f46; }
-        .btn-login:disabled { background: #94a3b8; cursor: not-allowed; }
+        .register-link { text-align: center; margin-top: 20px; font-size: 14px; color: #64748b; }
+        .register-link a { color: #047857; font-weight: 600; text-decoration: none; }
+        .register-link a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -38,9 +39,13 @@
     </div>
 
     <button onclick="loginUser()" id="loginBtn" class="btn-login">ግባ (Log In)</button>
+
+    <!-- 🔗 የ መመዝገቢያ (Register) ሊንክ -->
+    <div class="register-link">
+        አዲስ ተማሪ ነዎት? <a href="register.html">እዚህ ይመዝገቡ (Register)</a>
+    </div>
 </div>
 
-<!-- Supabase SDK & Configuration -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 
@@ -55,7 +60,6 @@ async function loginUser() {
         return;
     }
 
-    // የስልክ ቁጥር ፎርማት ማስተካከያ
     if (parentPhone.startsWith("+251")) {
         parentPhone = "0" + parentPhone.slice(4);
     } else if (parentPhone.startsWith("251")) {
@@ -66,7 +70,6 @@ async function loginUser() {
     loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> በመፈተሽ ላይ...';
 
     try {
-        // ከ Supabase ዳታቤዝ ተማሪውን መፈለግ
         const { data: students, error } = await supabaseClient
             .from('students')
             .select('*')
@@ -77,13 +80,8 @@ async function loginUser() {
 
         if (students && students.length > 0) {
             alert(`እንኳን ደህና መጡ! ተማሪ ${students[0].name} (ክፍል ${students[0].grade}) በስኬት ገብተዋል።`);
-            
-            // ሎጊን ሲያደርግ መረጃውን በ Session ይዞ ወደ Dashboard/ለተማሪው ወደሚታየው ገጽ መላክ ይቻላል፦
-            // localStorage.setItem('user', JSON.stringify(students[0]));
-            // window.location.href = "dashboard.html"; 
-
         } else {
-            alert("የተሳሳተ ስም ወይም የስልክ ቁጥር! መረጃው ዳታቤዝ ውስጥ አልተገኘም።");
+            alert("የተሳሳተ ስም ወይም የስልክ ቁጥር! እባክዎን አስቀድመው መመዝገብዎን ያረጋግጡ።");
         }
 
     } catch (err) {
