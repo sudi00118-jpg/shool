@@ -1,712 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="am">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Future Hope Secondary School</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    background:#f6f8f7;
-    color:#222;
-}
-
-header{
-    background:#12372a;
-    color:white;
-    padding:15px 6%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;
-    top:0;
-    z-index:1000;
-}
-
-.logo{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.logo small{
-    display:block;
-    font-size:11px;
-    color:#d9eee2;
-    margin-top:4px;
-}
-
-nav{
-    display:flex;
-    gap:20px;
-}
-
-nav a{
-    color:white;
-    text-decoration:none;
-    font-size:14px;
-}
-
-nav a:hover{
-    color:#9de0b5;
-}
-
-.login-btn{
-    background:#2e8b57;
-    padding:10px 15px;
-    border-radius:7px;
-}
-
-/* HERO */
-
-.hero{
-    min-height:560px;
-    display:flex;
-    align-items:center;
-    padding:60px 7%;
-    background:linear-gradient(135deg,#12372a,#21633f);
-    color:white;
-}
-
-.hero-content{
-    max-width:700px;
-}
-
-.hero h1{
-    font-size:48px;
-    margin-bottom:15px;
-}
-
-.hero h2{
-    font-size:25px;
-    color:#bde8cc;
-    margin-bottom:20px;
-}
-
-.hero p{
-    font-size:17px;
-    line-height:1.7;
-    color:#e5f1e9;
-    margin-bottom:30px;
-}
-
-.buttons{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    text-decoration:none;
-    padding:13px 20px;
-    border-radius:7px;
-    font-weight:bold;
-}
-
-.primary{
-    background:white;
-    color:#12372a;
-}
-
-.secondary{
-    border:1px solid white;
-    color:white;
-}
-
-/* SECTIONS */
-
-section{
-    padding:65px 7%;
-}
-
-.section-title{
-    text-align:center;
-    margin-bottom:35px;
-}
-
-.section-title h2{
-    color:#12372a;
-    font-size:30px;
-    margin-bottom:10px;
-}
-
-.section-title p{
-    color:#777;
-}
-
-/* ABOUT */
-
-.about{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:35px;
-    align-items:center;
-}
-
-.about-box{
-    background:white;
-    padding:30px;
-    border-radius:12px;
-    box-shadow:0 4px 15px #00000010;
-}
-
-.about-box h3{
-    color:#12372a;
-    margin-bottom:15px;
-}
-
-.about-box p{
-    color:#666;
-    line-height:1.8;
-}
-
-/* CARDS */
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-}
-
-.card{
-    background:white;
-    padding:25px;
-    text-align:center;
-    border-radius:12px;
-    box-shadow:0 4px 15px #00000010;
-}
-
-.icon{
-    font-size:35px;
-    margin-bottom:15px;
-}
-
-.card h3{
-    color:#12372a;
-    margin-bottom:10px;
-}
-
-.card p{
-    color:#666;
-    font-size:14px;
-    line-height:1.6;
-}
-
-/* FEATURES */
-
-.features{
-    background:#edf4ef;
-}
-
-.feature-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-}
-
-.feature{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-}
-
-.feature h3{
-    color:#12372a;
-    margin-bottom:10px;
-}
-
-.feature p{
-    color:#666;
-    line-height:1.6;
-}
-
-/* ADMISSION */
-
-.admission{
-    background:#12372a;
-    color:white;
-    text-align:center;
-}
-
-.admission h2{
-    font-size:30px;
-    margin-bottom:15px;
-}
-
-.admission p{
-    color:#d8e9df;
-    margin-bottom:25px;
-}
-
-/* NEWS */
-
-.news{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-}
-
-.news-card{
-    background:white;
-    padding:22px;
-    border-radius:12px;
-    box-shadow:0 4px 15px #00000010;
-}
-
-.news-card span{
-    font-size:12px;
-    color:#2e8b57;
-}
-
-.news-card h3{
-    margin:10px 0;
-    color:#12372a;
-}
-
-.news-card p{
-    color:#666;
-    line-height:1.6;
-}
-
-/* CONTACT */
-
-.contact{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:25px;
-}
-
-.contact-box{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 4px 15px #00000010;
-}
-
-.contact-box h3{
-    color:#12372a;
-    margin-bottom:15px;
-}
-
-.contact-box p{
-    margin:10px 0;
-    color:#666;
-}
-
-/* FOOTER */
-
-footer{
-    background:#0b241b;
-    color:white;
-    padding:35px 7%;
-    text-align:center;
-}
-
-footer p{
-    color:#b9c9c0;
-    margin:7px;
-    font-size:13px;
-}
-
-/* MOBILE */
-
-@media(max-width:800px){
-
-    header{
-        padding:13px 5%;
-    }
-
-    nav{
-        display:none;
-    }
-
-    .hero{
-        min-height:500px;
-        padding:50px 6%;
-    }
-
-    .hero h1{
-        font-size:35px;
-    }
-
-    .hero h2{
-        font-size:20px;
-    }
-
-    .about,
-    .contact{
-        grid-template-columns:1fr;
-    }
-
-    .cards{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .feature-grid,
-    .news{
-        grid-template-columns:1fr;
-    }
-
-}
-
-@media(max-width:500px){
-
-    .cards{
-        grid-template-columns:1fr;
-    }
-
-    section{
-        padding:50px 5%;
-    }
-
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት | Awash 40</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- HEADER -->
-
-<header>
-
-    <div class="logo">
-        🎓 Future Hope
-        <small>የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት</small>
-    </div>
-
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#academics">Academics</a>
-        <a href="#admission">Admissions</a>
-        <a href="#news">News</a>
-        <a href="#contact">Contact</a>
-        <a class="login-btn" href="login.html">Login</a>
+    <!-- 🌐 Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>የነገው ተስፋ ትምህርት ቤት</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">ስለ እኛ</a></li>
+            <li><a href="#rules">የትምህርት ቤቱ ህጎች</a></li>
+            <li><a href="#services">አገልግሎቶች</a></li>
+            <li><a href="#contact">ግንኙነት</a></li>
+            <li><a href="login.html" class="btn-login-nav"><i class="fa-solid fa-right-to-bracket"></i> ፖርታል ሎጊን</a></li>
+        </ul>
     </nav>
 
-</header>
-
-
-<!-- HERO -->
-
-<section class="hero" id="home">
-
-    <div class="hero-content">
-
-        <h1>Future Hope Secondary School</h1>
-
-        <h2>የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት</h2>
-
-        <p>
-            Empowering students with knowledge, discipline,
-            creativity and skills for a brighter future.
-        </p>
-
-        <div class="buttons">
-
-            <a href="#admission" class="btn primary">
-                Apply for Admission
-            </a>
-
-            <a href="login.html" class="btn secondary">
-                Student Portal
-            </a>
-
+    <!-- 🚀 Hero / Header Banner Section -->
+    <header class="hero">
+        <h1>እንኳን ወደ ነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት በደህና መጡ!</h1>
+        <p>በአዋሽ 40 (Awash 40) ለተማሪዎቻችን ጥራት ያለው ትምህርት፣ ስነ-ምግባር እና የበለፀገ የወደፊት ተስፋ እንገነባለን።</p>
+        <div class="hero-btns">
+            <a href="login.html" class="btn-primary">ወደ ሲስተሙ ግባ</a>
+            <a href="#rules" class="btn-secondary">ህጎችን ይመልከቱ</a>
         </div>
+    </header>
 
-    </div>
+    <!-- 🏫 About & Vision Section -->
+    <section class="section" id="about">
+        <h2 class="section-title">ራዕያችን እና ተልዕኳችን</h2>
+        <p class="section-subtitle">በትምህርት ጥራትና በስነ-ምግባር የታነጸ ትውልድ ማፍራት</p>
 
-</section>
-
-
-<!-- ABOUT -->
-
-<section id="about">
-
-    <div class="section-title">
-
-        <h2>About Our School</h2>
-
-        <p>Building today's students for tomorrow's success.</p>
-
-    </div>
-
-    <div class="about">
-
-        <div class="about-box">
-
-            <h3>🎓 Our Mission</h3>
-
-            <p>
-                Future Hope Secondary School is committed to
-                providing quality education and developing
-                responsible, creative and successful students.
-            </p>
-
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-eye"></i></div>
+                <h3>ራዕያችን (Vision)</h3>
+                <p>በቀጣናችን ውስጥ በውጤታማነቱና በቴክኖሎጂ አጠቃቀሙ ግንባር ቀደም የሆነና ብቁ ዜጎችን የሚያፈራ ሞዴል የ2ኛ ደረጃ ትምህርት ቤት መሆን።</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>ተልዕኳችን (Mission)</h3>
+                <p>ዘመናዊ የመማር ማስተማር ዘዴዎችን በመጠቀም የተማሪዎችን እውቅትና ክህሎት ማሳደግ፣ የስነ-ምግባር እሴቶችን ማስረጽ።</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-star"></i></div>
+                <h3>እሴቶቻችን (Core Values)</h3>
+                <p>ታማኝነት፣ ጥራት፣ የጋራ ስራ፣ አክብሮት እና ለውጥ ተቀባይነት የትምህርት ቤታችን ዋና መርሆች ናቸው።</p>
+            </div>
         </div>
+    </section>
 
-        <div class="about-box">
+    <!-- 📜 School Rules & Regulations Section (የትምህርት ቤቱ ህጎች) -->
+    <section class="section" style="background: #ffffff;" id="rules">
+        <h2 class="section-title">📜 የትምህርት ቤቱ አጠቃላይ ህጎችና መመሪያዎች</h2>
+        <p class="section-subtitle">እያንዳንዱ ተማሪና ወላጅ ሊያውቃቸው የሚገቡ ዋና ዋና ህጎች</p>
 
-            <h3>🌟 Our Vision</h3>
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                <h3>1. የሰዓት አክብሮት እና አቴንዳንስ</h3>
+                <ul class="rules-list">
+                    <li>ትምህርት ጠዋት 2:00 ሰዓት ላይ ይጀምራል። ዘግይቶ መምጣት አይፈቀድም።</li>
+                    <li>ያለ በቂ ምክንያት ከክፍል መቅረት በጥብቅ የተከለከለ ነው።</li>
+                    <li>ተማሪ ሲታመም ወይም ምክንያት ሲኖረው ወላጅ በጽሁፍ ማሳወቅ አለበት።</li>
+                </ul>
+            </div>
 
-            <p>
-                To become a leading secondary school that
-                prepares students with knowledge, character,
-                technology and practical skills for the future.
-            </p>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-shirt"></i></div>
+                <h3>2. ደንብ ልብስ እና ጽዳት (Dress Code)</h3>
+                <ul class="rules-list">
+                    <li>ማንኛውም ተማሪ ሙሉ የትምህርት ቤቱን ደንብ ልብስ (Uniform) መልበስ አለበት።</li>
+                    <li>የተማሪዎች ፀጉር እና አጠቃላይ ንፅህና የተጠበቀ መሆን አለበት።</li>
+                    <li>ከደንብ ልብስ ውጪ የተለያዩ ጌጣጌጦችን ማድረግ አይፈቀድም።</li>
+                </ul>
+            </div>
 
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                <h3>3. ስነ-ምግባር እና ዲስፕሊን</h3>
+                <ul class="rules-list">
+                    <li>ለመምህራን፣ ለሰራተኞች እና ለጓደኞች ተገቢውን አክብሮት ማሳየት።</li>
+                    <li>በትምህርት ቤት ግቢ ውስጥ ስልክ መጠቀም በጥብቅ የተከለከለ ነው።</li>
+                    <li>የትምህርት ቤቱን ንብረት መንከባከብ እና ጽዳት መጠበቅ ግዴታ ነው።</li>
+                </ul>
+            </div>
         </div>
+    </section>
 
-    </div>
+    <!-- 💻 Online Services Portal Section -->
+    <section class="section" id="services">
+        <h2 class="section-title">🖥️ የሲስተሙ ዲጂታል አገልግሎቶች</h2>
+        <p class="section-subtitle">በትምህርት ቤታችን ፖርታል የሚሰጡ አገልግሎቶች</p>
 
-</section>
-
-
-<!-- ACADEMICS -->
-
-<section id="academics">
-
-    <div class="section-title">
-
-        <h2>Academic Programs</h2>
-
-        <p>Quality education for Grades 9–12</p>
-
-    </div>
-
-    <div class="cards">
-
-        <div class="card">
-            <div class="icon">📐</div>
-            <h3>Mathematics</h3>
-            <p>
-                Developing logical thinking,
-                problem solving and analytical skills.
-            </p>
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <h3>የዳይሬክተር ፖርታል</h3>
+                <p>አጠቃላይ የተማሪዎች፣ የመምህራን መረጃ መቆጣጠሪያ እና ማኔጅ ማድረጊያ ክፍል ነው።</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-clipboard-user"></i></div>
+                <h3>የክፍል ኃላፊ መምህር ገፅ</h3>
+                <p>የዕለቱን የአቴንዳንስ መረጃ መቅረጫ እና የአቴንዳንስ ሪፖርት ማውጫ።</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                <h3>የመምህራን ፖርታል</h3>
+                <p>የተማሪዎችን የፈተና ውጤት እና የቤት ስራ ማስገቢያና መከታተያ።</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+                <h3>የወላጅ እና የተማሪ ፖርታል</h3>
+                <p>ወላጆች የልጆቻቸውን አቴንዳንስ እና ውጤት በቤታቸው ሆነው የሚከታተሉበት።</p>
+            </div>
         </div>
+    </section>
 
-        <div class="card">
-            <div class="icon">🔬</div>
-            <h3>Science</h3>
-            <p>
-                Physics, Chemistry and Biology
-                with practical learning.
-            </p>
+    <!-- 📞 Footer Section -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-box">
+                <h4>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h4>
+                <p>📍 አዋሽ 40 (Awash 40), Afar Region, Ethiopia</p>
+                <p>📞 Phone: +251 900 000 000</p>
+                <p>✉️ Email: info@negewtesfa.edu.et</p>
+            </div>
+            <div class="footer-box">
+                <h4>ፈጣን ሊንኮች</h4>
+                <p><a href="login.html" style="color:#94a3b8; text-decoration:none;">ሲስተም ሎጊን</a></p>
+                <p><a href="#rules" style="color:#94a3b8; text-decoration:none;">የትምህርት ቤት ደንቦች</a></p>
+            </div>
         </div>
-
-        <div class="card">
-            <div class="icon">💻</div>
-            <h3>ICT</h3>
-            <p>
-                Preparing students for the
-                modern digital world.
-            </p>
+        <div class="footer-bottom">
+            © 2026 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት | Smart School Management System
         </div>
-
-        <div class="card">
-            <div class="icon">📚</div>
-            <h3>Languages</h3>
-            <p>
-                English, Amharic and communication
-                skills development.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- FEATURES -->
-
-<section class="features">
-
-    <div class="section-title">
-
-        <h2>Why Choose Future Hope?</h2>
-
-        <p>More than education — preparing students for life.</p>
-
-    </div>
-
-    <div class="feature-grid">
-
-        <div class="feature">
-            <h3>👨‍🏫 Qualified Teachers</h3>
-            <p>
-                Experienced teachers who support
-                students in their academic journey.
-            </p>
-        </div>
-
-        <div class="feature">
-            <h3>💻 Modern Learning</h3>
-            <p>
-                Technology-supported learning and
-                modern educational resources.
-            </p>
-        </div>
-
-        <div class="feature">
-            <h3>⚽ Student Activities</h3>
-            <p>
-                Sports, clubs and extracurricular
-                activities for balanced development.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ADMISSION -->
-
-<section class="admission" id="admission">
-
-    <h2>Admissions Are Open</h2>
-
-    <p>
-        Join Future Hope Secondary School and
-        build your future with us.
-    </p>
-
-    <a href="login.html" class="btn primary">
-        Student Portal
-    </a>
-
-</section>
-
-
-<!-- NEWS -->
-
-<section id="news">
-
-    <div class="section-title">
-
-        <h2>Latest News & Announcements</h2>
-
-        <p>Stay updated with school activities.</p>
-
-    </div>
-
-    <div class="news">
-
-        <div class="news-card">
-
-            <span>📅 School News</span>
-
-            <h3>New Academic Year</h3>
-
-            <p>
-                Welcome to the new academic year.
-                We wish all students success.
-            </p>
-
-        </div>
-
-        <div class="news-card">
-
-            <span>📝 Examination</span>
-
-            <h3>Mid-Term Examination</h3>
-
-            <p>
-                Students should prepare for the
-                upcoming mid-term examinations.
-            </p>
-
-        </div>
-
-        <div class="news-card">
-
-            <span>🏆 Activities</span>
-
-            <h3>Student Activities</h3>
-
-            <p>
-                Sports and school club activities
-                will continue throughout the semester.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- CONTACT -->
-
-<section id="contact">
-
-    <div class="section-title">
-
-        <h2>Contact Us</h2>
-
-        <p>We are happy to hear from you.</p>
-
-    </div>
-
-    <div class="contact">
-
-        <div class="contact-box">
-
-            <h3>📍 School Information</h3>
-
-            <p>🏫 Future Hope Secondary School</p>
-            <p>📍 Ethiopia</p>
-            <p>📞 +251 XXX XXX XXX</p>
-            <p>✉️ info@futurehope.school</p>
-
-        </div>
-
-        <div class="contact-box">
-
-            <h3>🔐 School Portal</h3>
-
-            <p>
-                Students, teachers and administrators
-                can access the school management system.
-            </p>
-
-            <br>
-
-            <a href="login.html" class="btn primary">
-                Open School Portal
-            </a>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- FOOTER -->
-
-<footer>
-
-    <h3>🎓 Future Hope Secondary School</h3>
-
-    <p>የነገው ተስፋ ሁለተኛ ደረጃ ት/ቤት</p>
-
-    <p>
-        © 2026 Future Hope School. All Rights Reserved.
-    </p>
-
-</footer>
+    </footer>
 
 </body>
 </html>
