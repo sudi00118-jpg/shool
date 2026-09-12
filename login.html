@@ -1,160 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login | Future Hope School</title>
-
-<style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
-}
-
-body{
-    min-height:100vh;
-    background:linear-gradient(135deg,#102a43,#1d4e89);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-}
-
-.login-box{
-    width:100%;
-    max-width:420px;
-    background:white;
-    padding:30px;
-    border-radius:22px;
-    box-shadow:0 15px 40px rgba(0,0,0,.25);
-}
-
-.logo{
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    color:#102a43;
-    margin-bottom:8px;
-}
-
-.subtitle{
-    text-align:center;
-    color:#667085;
-    margin-bottom:25px;
-}
-
-.role-buttons{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-bottom:25px;
-}
-
-.role{
-    border:2px solid #e4e7ec;
-    background:#f8fafc;
-    padding:12px 5px;
-    border-radius:10px;
-    cursor:pointer;
-    text-align:center;
-    font-weight:bold;
-    color:#344054;
-}
-
-.role.active{
-    background:#102a43;
-    color:white;
-    border-color:#102a43;
-}
-
-.icon{
-    display:block;
-    font-size:25px;
-    margin-bottom:5px;
-}
-
-label{
-    display:block;
-    margin-bottom:7px;
-    color:#344054;
-    font-weight:bold;
-}
-
-input{
-    width:100%;
-    padding:14px;
-    border:1px solid #d0d5dd;
-    border-radius:10px;
-    font-size:16px;
-    margin-bottom:17px;
-    outline:none;
-}
-
-input:focus{
-    border-color:#1d4e89;
-}
-
-.login-btn{
-    width:100%;
-    padding:15px;
-    border:0;
-    border-radius:10px;
-    background:#102a43;
-    color:white;
-    font-size:17px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.login-btn:active{
-    transform:scale(.98);
-}
-
-.message{
-    margin-top:15px;
-    text-align:center;
-    font-weight:bold;
-}
-
-.footer{
-    text-align:center;
-    margin-top:22px;
-    color:#667085;
-    font-size:13px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Future Hope School</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { min-height: 100vh; background: linear-gradient(135deg, #102a43, #1d4e89); display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .login-box { width: 100%; max-width: 420px; background: white; padding: 30px; border-radius: 22px; box-shadow: 0 15px 40px rgba(0,0,0,.25); }
+        .logo { text-align: center; font-size: 28px; font-weight: bold; color: #102a43; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #667085; margin-bottom: 25px; }
+        .role-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 25px; }
+        .role { border: 2px solid #e4e7ec; background: #f8fafc; padding: 12px 5px; border-radius: 10px; cursor: pointer; text-align: center; font-weight: bold; color: #344054; }
+        .role.active { background: #102a43; color: white; border-color: #102a43; }
+        .icon { display: block; font-size: 25px; margin-bottom: 5px; }
+        label { display: block; margin-bottom: 7px; color: #344054; font-weight: bold; }
+        input { width: 100%; padding: 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 16px; margin-bottom: 17px; outline: none; }
+        .login-btn { width: 100%; padding: 15px; border: 0; border-radius: 10px; background: #102a43; color: white; font-size: 17px; font-weight: bold; cursor: pointer; }
+        .message { margin-top: 15px; text-align: center; font-weight: bold; }
+        .footer { text-align: center; margin-top: 22px; color: #667085; font-size: 13px; }
+    </style>
 </head>
-
 <body>
 
 <div class="login-box">
+    <div class="logo">🏫 Future Hope School</div>
+    <div class="subtitle">የነገው ተስፋ — School Portal</div>
 
-    <div class="logo">
-        🏫 Future Hope School
-    </div>
-
-    <div class="subtitle">
-        የነገው ተስፋ — School Portal
-    </div>
-
-    <!-- ROLE -->
     <div class="role-buttons">
-        <div class="role active" onclick="selectRole('admin', this)">
-            <span class="icon">👨‍💼</span> Admin
-        </div>
-        <div class="role" onclick="selectRole('teacher', this)">
-            <span class="icon">👨‍🏫</span> Teacher
-        </div>
-        <div class="role" onclick="selectRole('student', this)">
-            <span class="icon">👨‍🎓</span> Student
-        </div>
+        <div class="role active" onclick="selectRole('admin', this)"><span class="icon">👨‍💼</span> Admin</div>
+        <div class="role" onclick="selectRole('teacher', this)"><span class="icon">👨‍🏫</span> Teacher</div>
+        <div class="role" onclick="selectRole('student', this)"><span class="icon">👨‍🎓</span> Student</div>
     </div>
 
     <form onsubmit="login(event)">
-        <label id="emailLabel">Email Address</label>
+        <label>Email Address</label>
         <input id="email" type="email" placeholder="Enter email address" required>
 
         <label>Password</label>
@@ -164,45 +44,26 @@ input:focus{
     </form>
 
     <div id="message" class="message"></div>
-
-    <div class="footer">
-        Future Hope School © 2026
-    </div>
-
+    <div class="footer">Future Hope School © 2026</div>
 </div>
 
-<!-- FIREBASE SDK INCLUDES -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- 1. SUPABASE SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 2. SUPABASE CONFIG FILE -->
+<script src="supabase-config.js"></script>
 
 <script>
-// 1. Firebase Config (ከ console.firebase.google.com የሚገኘውን ቁልፍ እዚህ ይተኩት)
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
 let selectedRole = "admin";
 
-function selectRole(role, element){
+function selectRole(role, element) {
     selectedRole = role;
     document.querySelectorAll(".role").forEach(item => item.classList.remove("active"));
     element.classList.add("active");
 }
 
-async function login(event){
+async function login(event) {
     event.preventDefault();
-
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const message = document.getElementById("message");
@@ -210,39 +71,40 @@ async function login(event){
     message.style.color = "#102a43";
     message.textContent = "⏳ Logging in...";
 
-    try {
-        // Firebase Authentication Sign In
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+    // Supabase Authentication Login
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
 
-        // User role check from Firestore Database
-        const doc = await db.collection("users").doc(user.uid).get();
-
-        if (doc.exists) {
-            const userData = doc.data();
-            
-            if (userData.role === selectedRole) {
-                message.style.color = "#027a48";
-                message.textContent = "✅ Login successful!";
-                
-                // Redirecting based on user role
-                setTimeout(() => {
-                    if (selectedRole === "admin") window.location.href = "admin.html";
-                    else if (selectedRole === "teacher") window.location.href = "teacher.html";
-                    else if (selectedRole === "student") window.location.href = "student.html";
-                }, 1000);
-            } else {
-                message.style.color = "#d92d20";
-                message.textContent = `❌ Account exists, but not registered as ${selectedRole}.`;
-            }
-        } else {
-            message.style.color = "#d92d20";
-            message.textContent = "❌ User profile not found in database.";
-        }
-
-    } catch (error) {
+    if (error) {
         message.style.color = "#d92d20";
-        message.textContent = "❌ Error: " + error.message;
+        message.textContent = "❌ " + error.message;
+        return;
+    }
+
+    // Role verification from profiles table
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+    if (profileError || !profile) {
+        message.style.color = "#d92d20";
+        message.textContent = "❌ User profile not found!";
+        return;
+    }
+
+    if (profile.role === selectedRole) {
+        message.style.color = "#027a48";
+        message.textContent = "✅ Login successful!";
+        setTimeout(() => {
+            window.location.href = selectedRole + ".html";
+        }, 1000);
+    } else {
+        message.style.color = "#d92d20";
+        message.textContent = `❌ Account is not registered as ${selectedRole}.`;
     }
 }
 </script>
