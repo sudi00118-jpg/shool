@@ -3,59 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>የተማሪ ገጽ | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
+    <title>የተማሪ ፖርታል | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .student-card { width: 100%; max-width: 420px; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #047857; }
-        .student-card h2 { color: #064e3b; text-align: center; margin-bottom: 20px; font-size: 22px; }
+        body { background-color: #f4f7f6; color: #334155; padding-bottom: 40px; }
         
-        .info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-        .info-label { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .info-value { font-size: 16px; color: #1e293b; font-weight: 600; }
+        header { background: #047857; color: white; padding: 20px; text-align: center; position: relative; }
+        header h1 { font-size: 20px; font-weight: 600; }
+        .btn-logout { position: absolute; right: 15px; top: 18px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
 
-        .btn-logout { width: 100%; background: #ef4444; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; transition: 0.3s; margin-top: 15px; }
-        .btn-logout:hover { background: #dc2626; }
+        /* Profile Card */
+        .profile-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; border-left: 6px solid #047857; }
+        .profile-info h3 { color: #064e3b; font-size: 18px; margin-bottom: 5px; }
+        .profile-info p { font-size: 14px; color: #64748b; }
+        .badge { background: #dcfce7; color: #166534; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 13px; }
+
+        /* Sections */
+        .section-title { font-size: 16px; font-weight: 600; color: #0f172a; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .card-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th { background: #f8fafc; color: #475569; }
+
+        .announcement-item { background: #f8fafc; border-left: 4px solid #0284c7; padding: 12px; margin-bottom: 10px; border-radius: 4px; }
+        .announcement-item h4 { color: #0369a1; font-size: 14px; margin-bottom: 4px; }
+        .announcement-item p { font-size: 13px; color: #475569; }
     </style>
 </head>
 <body>
 
-<div class="student-card">
-    <h2><i class="fa-solid fa-user-graduate"></i> የተማሪ መረጃ ገጽ</h2>
-    
-    <div class="info-box">
-        <div class="info-label">የተማሪው ሙሉ ስም</div>
-        <div class="info-value" id="stName">---</div>
+<header>
+    <h1><i class="fa-solid fa-graduation-cap"></i> የተማሪ ፖርታል</h1>
+    <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> ውጣ</button>
+</header>
+
+<div class="container">
+    <!-- የተማሪ መረጃ -->
+    <div class="profile-card">
+        <div class="profile-info">
+            <h3 id="stName">በመጫን ላይ...</h3>
+            <p><i class="fa-solid fa-phone"></i> የወላጅ ስልክ፦ <span id="stPhone">---</span></p>
+        </div>
+        <div class="badge" id="stGrade">---</div>
     </div>
 
-    <div class="info-box">
-        <div class="info-label">ክፍል (Grade)</div>
-        <div class="info-value" id="stGrade">---</div>
+    <!-- የትምህርት ፕሮግራም (Timetable) -->
+    <div class="section-title"><i class="fa-solid fa-calendar-days"></i> የትምህርት ፕሮግራም (Timetable)</div>
+    <div class="card-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>ቀን</th>
+                    <th>ትምህርት</th>
+                    <th>ሰዓት</th>
+                </tr>
+            </thead>
+            <tbody id="timetableBody">
+                <tr><td colspan="3" style="text-align:center;">መረጃ በመጫን ላይ...</td></tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="info-box">
-        <div class="info-label">የወላጅ ስልክ ቁጥር</div>
-        <div class="info-value" id="stPhone">---</div>
+    <!-- ማስታወቂያዎች -->
+    <div class="section-title"><i class="fa-solid fa-bullhorn"></i> ትምህርት ቤት ማስታወቂያዎች</div>
+    <div class="card-box" id="announcementsBox">
+        <p style="text-align:center; color:#64748b;">ምንም ማስታወቂያ የለም</p>
     </div>
-
-    <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> ውጣ (Logout)</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
 <script>
-    // Login ያደረገው ተማሪ መረጃ ከ LocalStorage ላይ ማውጣት
     const studentData = JSON.parse(localStorage.getItem('loggedInStudent'));
 
     if (!studentData) {
-        // መረጃው ከሌለ ወደ login.html ይመልሰዋል
         window.location.replace("login.html");
     } else {
-        // የተማሪውን መረጃ በገጹ ላይ ማሳየት
-        document.getElementById('stName').innerText = studentData.name || 'አልተገኘም';
-        document.getElementById('stGrade').innerText = studentData.grade ? studentData.grade + "ኛ ክፍል" : 'አልተገኘም';
-        document.getElementById('stPhone').innerText = studentData.parent_phone || 'አልተገኘም';
+        document.getElementById('stName').innerText = studentData.name;
+        document.getElementById('stGrade').innerText = studentData.grade + "ኛ ክፍል";
+        document.getElementById('stPhone').innerText = studentData.parent_phone;
+
+        loadTimetable();
+        loadAnnouncements();
+    }
+
+    // የትምህርት ፕሮግራም ከ Supabase ማውጣት
+    async function loadTimetable() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('timetable')
+                .select('*');
+
+            if (error) throw error;
+
+            const tbody = document.getElementById('timetableBody');
+            tbody.innerHTML = '';
+
+            if (data && data.length > 0) {
+                data.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${item.day || '-'}</b></td>
+                            <td>${item.subject || '-'}</td>
+                            <td>${item.time || '-'}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">ምንም የክፍል ፕሮግራም አልተካተተም</td></tr>';
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // ማስታወቂያዎችን ከ Supabase ማውጣት
+    async function loadAnnouncements() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('announcements')
+                .select('*');
+
+            if (error) throw error;
+
+            const box = document.getElementById('announcementsBox');
+            if (data && data.length > 0) {
+                box.innerHTML = '';
+                data.forEach(item => {
+                    box.innerHTML += `
+                        <div class="announcement-item">
+                            <h4>${item.title || 'ማስታወቂያ'}</h4>
+                            <p>${item.content || ''}</p>
+                        </div>
+                    `;
+                });
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function logout() {
