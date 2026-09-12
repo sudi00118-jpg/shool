@@ -1,67 +1,144 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Future Hope School</title>
-
-  <!-- Supabase CDN & JS Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js" defer></script>
-
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-    body { background: #f4f7fb; color: #172033; padding: 20px; }
-    .header { background: #102a43; color: white; padding: 17px 5%; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; margin-bottom: 20px; }
-    .container { max-width: 800px; margin: auto; }
-    .form-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .form-card h2 { margin-bottom: 15px; color: #102a43; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: #102a43; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
-    button:hover { background: #243b53; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Future Hope School</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { background: #102a43; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        input, select, button { padding: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 15px; width: 100%; }
+        button { background: #102a43; color: white; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #1d4e89; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e4e7ec; }
+        th { background: #f8fafc; color: #344054; }
+        .btn-danger { background: #d92d20; padding: 6px 12px; border-radius: 6px; font-size: 13px; }
+    </style>
 </head>
 <body>
 
-  <div class="header">
-    <h2>🎓 Future Hope School - Admin Dashboard</h2>
-  </div>
-
-  <div class="container">
-    <!-- የተማሪ መመዝገቢያ Form -->
-    <div class="form-card">
-      <h2>አዲስ ተማሪ መመዝገቢያ</h2>
-      <form id="studentForm">
-        <div class="form-group">
-          <label>የተማሪ ስም:</label>
-          <input type="text" id="studentName" placeholder="ምሳሌ፡ አበበ ከበደ" required>
-        </div>
-        <div class="form-group">
-          <label>ክፍል:</label>
-          <input type="text" id="studentGrade" placeholder="ምሳሌ፡ Grade 10" required>
-        </div>
-        <button type="submit">ተማሪ መዝግብ</button>
-      </form>
+<div class="container">
+    <div class="header">
+        <h2>👨‍💼 Admin Management</h2>
+        <button onclick="logout()" style="width: auto; background: #d92d20;">Logout</button>
     </div>
 
-    <!-- የመምህር መመዝገቢያ Form -->
-    <div class="form-card">
-      <h2>አዲስ መምህር መመዝገቢያ</h2>
-      <form id="teacherForm">
-        <div class="form-group">
-          <label>የመምህር ስም:</label>
-          <input type="text" id="teacherName" placeholder="ምሳሌ፡ መምህር አሰፋ" required>
-        </div>
-        <div class="form-group">
-          <label>የሚያስተምሩት ትምህርት:</label>
-          <input type="text" id="teacherSubject" placeholder="ምሳሌ፡ Mathematics" required>
-        </div>
-        <button type="submit">መምህር መዝግብ</button>
-      </form>
+    <!-- Register New User -->
+    <div class="card">
+        <h3>➕ Add New User</h3><br>
+        <form id="addUserForm" onsubmit="addUser(event)">
+            <div class="form-group">
+                <input type="text" id="fullName" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <select id="role" required>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button type="submit">Save User to Supabase</button>
+        </form>
     </div>
-  </div>
+
+    <!-- Users List Table -->
+    <div class="card">
+        <h3>📋 Registered Users</h3><br>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <tr><td colspan="4">Loading data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+async function loadUsers() {
+    const { data: users, error } = await supabase.from('profiles').select('*');
+    const tbody = document.getElementById('userTableBody');
+    tbody.innerHTML = '';
+
+    if (error) {
+        tbody.innerHTML = `<tr><td colspan="4">Error loading data: ${error.message}</td></tr>`;
+        return;
+    }
+
+    users.forEach(u => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${u.full_name}</td>
+                <td>${u.email}</td>
+                <td><b>${u.role.toUpperCase()}</b></td>
+                <td><button class="btn-danger" onclick="deleteUser('${u.id}')">Delete</button></td>
+            </tr>
+        `;
+    });
+}
+
+async function addUser(e) {
+    e.preventDefault();
+    const fullName = document.getElementById('fullName').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    // 1. Create Auth User
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        alert("Auth Error: " + error.message);
+        return;
+    }
+
+    // 2. Insert to Database Table
+    if (data.user) {
+        const { error: dbError } = await supabase.from('profiles').insert([
+            { id: data.user.id, full_name: fullName, email: email, role: role }
+        ]);
+
+        if (dbError) alert("Database Error: " + dbError.message);
+        else {
+            alert("User added successfully!");
+            document.getElementById('addUserForm').reset();
+            loadUsers();
+        }
+    }
+}
+
+async function deleteUser(id) {
+    if (confirm("Are you sure?")) {
+        const { error } = await supabase.from('profiles').delete().eq('id', id);
+        if (error) alert("Error deleting: " + error.message);
+        else loadUsers();
+    }
+}
+
+async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = 'login.html';
+}
+
+loadUsers();
+</script>
 
 </body>
 </html>
