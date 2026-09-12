@@ -3,57 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ተማሪ መመዝገቢያ | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
-    <!-- Google Fonts & Icons -->
+    <title>አዲስ ተማሪ መመዝገቢያ | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body style="background-color: #f4f7f6; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;">
-
-<!-- የተማሪ መመዝገቢያ ፎርም UI -->
-<div style="width: 100%; max-width: 450px; margin: 20px; padding: 25px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-    <h3 style="margin-bottom: 20px; color: #064e3b; text-align: center;">አዲስ ተማሪ መመዝገቢያ</h3>
     
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155;">የተማሪው ሙሉ ስም</label>
-        <input type="text" id="studentName" placeholder="ምሳሌ፦ አቤል ከበደ" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .register-card { width: 100%; max-width: 420px; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .register-card h2 { color: #064e3b; text-align: center; margin-bottom: 20px; font-size: 22px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; background: white; }
+        .form-control:focus { border-color: #047857; }
+        .btn-register { width: 100%; background: #047857; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; transition: 0.3s; margin-top: 10px; }
+        .btn-register:hover { background: #065f46; }
+        .login-link { text-align: center; font-size: 14px; color: #64748b; margin-top: 20px; }
+        .login-link a { color: #047857; font-weight: 600; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+    <h2><i class="fa-solid fa-user-plus"></i> አዲስ ተማሪ መመዝገቢያ</h2>
+    
+    <div class="form-group">
+        <label for="regName">የተማሪው ሙሉ ስም</label>
+        <input type="text" id="regName" class="form-control" placeholder="ምሳሌ፦ አቤል ከበደ" required>
     </div>
 
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155;">ክፍል</label>
-        <select id="studentGrade" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
-            <option value="9">9ኛ ክፍል</option>
-            <option value="10">10ኛ ክፍል</option>
+    <!-- 🎯 ከ 9ኛ እስከ 12ኛ ክፍል የተስተካከለው Select Box -->
+    <div class="form-group">
+        <label for="regGrade">ክፍል (Grade)</label>
+        <select id="regGrade" class="form-control" required>
+            <option value="9">9ኛ ክፍል (Grade 9)</option>
+            <option value="10" selected>10ኛ ክፍል (Grade 10)</option>
+            <option value="11">11ኛ ክፍል (Grade 11)</option>
+            <option value="12">12ኛ ክፍል (Grade 12)</option>
         </select>
     </div>
 
-    <div style="margin-bottom: 20px;">
-        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155;">የወላጅ ስልክ ቁጥር</label>
-        <input type="tel" id="parentPhone" placeholder="0912345678" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+    <div class="form-group">
+        <label for="regPhone">የወላጅ ስልክ ቁጥር</label>
+        <input type="tel" id="regPhone" class="form-control" placeholder="0912345678" required>
     </div>
 
-    <button onclick="registerStudent()" id="regBtn" style="width: 100%; background: #047857; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
-        ተማሪውን መዝግብ
-    </button>
+    <button onclick="registerStudent()" id="regBtn" class="btn-register">ተማሪውን መዝግብ</button>
+
+    <div class="login-link">
+        ከዚህ ቀደም ተመዝግበዋል? <a href="login.html">እዚህ ይግቡ (Login)</a>
+    </div>
 </div>
 
-<!-- Supabase SDK & Configuration -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 
 <script>
 async function registerStudent() {
-    const studentName = document.getElementById('studentName').value.trim();
-    const grade = document.getElementById('studentGrade').value;
-    let parentPhone = document.getElementById('parentPhone').value.trim();
+    const name = document.getElementById('regName').value.trim();
+    const grade = document.getElementById('regGrade').value;
+    let parentPhone = document.getElementById('regPhone').value.trim();
     const regBtn = document.getElementById('regBtn');
 
-    if (!studentName || !parentPhone) {
-        alert("እባክዎን የተማሪውን ስም እና የወላጅ ስልክ ቁጥር ሙሉ በሙሉ ያስገቡ!");
+    if (!name || !parentPhone) {
+        alert("እባክዎን ሁሉንም መረጃዎች በትክክል ያስገቡ!");
         return;
     }
 
-    // የስልክ ቁጥር ፎርማት ማስተካከያ
     if (parentPhone.startsWith("+251")) {
         parentPhone = "0" + parentPhone.slice(4);
     } else if (parentPhone.startsWith("251")) {
@@ -61,32 +78,26 @@ async function registerStudent() {
     }
 
     regBtn.disabled = true;
-    regBtn.innerHTML = "በመመዝገብ ላይ...";
+    regBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> በመመዝገብ ላይ...';
 
     try {
         const { data, error } = await supabaseClient
             .from('students')
             .insert([
-                { 
-                    name: studentName, 
-                    grade: grade, 
-                    parent_phone: parentPhone 
-                }
+                { name: name, grade: grade, parent_phone: parentPhone }
             ]);
 
         if (error) throw error;
 
-        alert(`ተማሪ ${studentName} ከወላጅ ስልክ (${parentPhone}) ጋር በስኬት ተመዝግቧል!`);
-        
-        document.getElementById('studentName').value = '';
-        document.getElementById('parentPhone').value = '';
+        alert(`ተማሪ ${name} (ክፍል ${grade}) በስኬት ተመዝግቧል! አሁን መግባት ይችላሉ።`);
+        window.location.href = "login.html";
 
     } catch (err) {
         console.error("Registration Error:", err);
-        alert("ተማሪውን በመመዝገብ ላይ ስህተት ተከሰተ፦ " + err.message);
+        alert("ምዝገባው አልተሳካም፦ " + err.message);
     } finally {
         regBtn.disabled = false;
-        regBtn.innerHTML = "ተማሪውን መዝግብ";
+        regBtn.innerHTML = 'ተማሪውን መዝግብ';
     }
 }
 </script>
