@@ -3,117 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Future Hope School</title>
+    <title>Login | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { min-height: 100vh; background: linear-gradient(135deg, #102a43, #1d4e89); display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .login-box { width: 100%; max-width: 420px; background: white; padding: 30px; border-radius: 22px; box-shadow: 0 15px 40px rgba(0,0,0,.25); }
-        .logo { text-align: center; font-size: 28px; font-weight: bold; color: #102a43; margin-bottom: 8px; }
-        .subtitle { text-align: center; color: #667085; margin-bottom: 25px; }
-        .role-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 25px; }
-        .role { border: 2px solid #e4e7ec; background: #f8fafc; padding: 12px 5px; border-radius: 10px; cursor: pointer; text-align: center; font-weight: bold; color: #344054; }
-        .role.active { background: #102a43; color: white; border-color: #102a43; }
-        .icon { display: block; font-size: 25px; margin-bottom: 5px; }
-        label { display: block; margin-bottom: 7px; color: #344054; font-weight: bold; }
-        input { width: 100%; padding: 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 16px; margin-bottom: 17px; outline: none; }
-        .login-btn { width: 100%; padding: 15px; border: 0; border-radius: 10px; background: #102a43; color: white; font-size: 17px; font-weight: bold; cursor: pointer; }
-        .message { margin-top: 15px; text-align: center; font-weight: bold; word-break: break-all; }
-        .footer { text-align: center; margin-top: 22px; color: #667085; font-size: 13px; }
+        body { background: #102a43; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .login-card { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; }
+        .school-title { color: #102a43; font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .school-sub { color: #627d98; font-size: 14px; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 14px; font-weight: bold; color: #334e68; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #bcccdc; border-radius: 8px; font-size: 15px; outline: none; }
+        input:focus { border-color: #2563eb; }
+        .btn-login { width: 100%; background: #102a43; color: white; border: 0; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-login:hover { background: #243b53; }
+        #alertMsg { margin-top: 15px; font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="login-box">
-    <div class="logo">🏫 Future Hope School</div>
-    <div class="subtitle">የነገው ተስፋ — School Portal</div>
+<div class="login-card">
+    <div class="school-title">🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</div>
+    <div class="school-sub">📍 አዋሽ 40 (Awash 40) | Portal Login</div>
 
-    <div class="role-buttons">
-        <div class="role active" onclick="selectRole('admin', this)"><span class="icon">👨‍💼</span> Admin</div>
-        <div class="role" onclick="selectRole('teacher', this)"><span class="icon">👨‍🏫</span> Teacher</div>
-        <div class="role" onclick="selectRole('student', this)"><span class="icon">👨‍🎓</span> Student</div>
-    </div>
-
-    <form onsubmit="login(event)">
-        <label>Email Address</label>
-        <input id="email" type="email" placeholder="Enter email address" required>
-
-        <label>Password</label>
-        <input id="password" type="password" placeholder="Enter password" required>
-
-        <button class="login-btn" type="submit">🔐 Login</button>
+    <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label>Email Address (ኢሜይል)</label>
+            <input type="email" id="loginEmail" placeholder="e.g. user@school.com" required>
+        </div>
+        <div class="form-group">
+            <label>Password (የይለፍ ቃል)</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-login" id="submitBtn">Sign In (ግባ)</button>
     </form>
 
-    <div id="message" class="message"></div>
-    <div class="footer">Future Hope School © 2026</div>
+    <div id="alertMsg"></div>
 </div>
 
+<!-- Supabase SDK Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 
 <script>
-let selectedRole = "admin";
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const alertMsg = document.getElementById("alertMsg");
+    const submitBtn = document.getElementById("submitBtn");
 
-function selectRole(role, element) {
-    selectedRole = role;
-    document.querySelectorAll(".role").forEach(item => item.classList.remove("active"));
-    element.classList.add("active");
-}
-
-async function login(event) {
-    event.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("message");
-
-    message.style.color = "#102a43";
-    message.textContent = "⏳ Logging in...";
+    alertMsg.style.color = "#102a43";
+    alertMsg.textContent = "⏳ Logging in...";
+    submitBtn.disabled = true;
 
     try {
-        // 1. Supabase Authentication Login
+        // 1. Supabase Auth Login
         const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         });
 
-        if (error) {
-            message.style.color = "#d92d20";
-            message.textContent = "❌ " + error.message;
-            return;
-        }
+        if (error) throw error;
 
-        // 2. Profile fetch
-        const { data: profile, error: profileError } = await supabaseClient
-            .from('profiles')
-            .select('role')
-            .eq('id', data.user.id)
-            .maybeSingle();
+        if (data.user) {
+            // 2. Fetch User Profile & Role from Supabase DB
+            const { data: profile, error: profileError } = await supabaseClient
+                .from('profiles')
+                .select('role')
+                .eq('id', data.user.id)
+                .single();
 
-        if (profileError) {
-            message.style.color = "#d92d20";
-            message.textContent = "❌ Database Error: " + profileError.message;
-            return;
-        }
-
-        if (!profile) {
-            message.style.color = "#d92d20";
-            message.textContent = "❌ User profile not found!";
-            return;
-        }
-
-        if (profile.role === selectedRole) {
-            message.style.color = "#027a48";
-            message.textContent = "✅ Login successful!";
-            setTimeout(() => {
-                window.location.href = selectedRole + ".html";
-            }, 800);
-        } else {
-            message.style.color = "#d92d20";
-            message.textContent = `❌ Account is registered as ${profile.role}.`;
+            if (profileError) {
+                // If profile is not found, fallback to user_metadata
+                const userRole = data.user.user_metadata?.role || 'student';
+                redirectUser(userRole);
+            } else {
+                redirectUser(profile.role);
+            }
         }
     } catch (err) {
-        message.style.color = "#d92d20";
-        message.textContent = "❌ Connection Error: " + err.message;
+        alertMsg.style.color = "#d92d20";
+        alertMsg.textContent = "❌ Error: " + err.message;
+        submitBtn.disabled = false;
     }
+}
+
+function redirectUser(role) {
+    const alertMsg = document.getElementById("alertMsg");
+    alertMsg.style.color = "#16a34a";
+    alertMsg.textContent = "✅ Success! Redirecting...";
+
+    setTimeout(() => {
+        if (role === 'admin') {
+            window.location.href = 'admin.html';
+        } else if (role === 'teacher') {
+            window.location.href = 'teacher.html';
+        } else if (role === 'parent') {
+            window.location.href = 'parent.html';
+        } else {
+            window.location.href = 'student.html';
+        }
+    }, 1000);
 }
 </script>
 
