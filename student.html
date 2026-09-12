@@ -14,6 +14,10 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border-bottom: 1px solid #e4e7ec; padding: 12px; text-align: left; }
         th { background: #f8fafc; color: #344054; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+        .badge-Present { background: #dcfce7; color: #15803d; }
+        .badge-Absent { background: #fee2e2; color: #b91c1c; }
+        .badge-Late { background: #fef3c7; color: #b45309; }
         .ann-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; margin-bottom: 10px; border-radius: 4px; }
         .btn-profile { background: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 10px; display: inline-block; }
         .logout-btn { background: #d92d20; color: white; border: 0; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
@@ -23,7 +27,6 @@
 <body>
 
 <div class="container">
-    <!-- Header (ከላይ እንዲሆን የተስተካከለ) -->
     <div class="header">
         <div>
             <h2>🏫 የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</h2>
@@ -47,6 +50,22 @@
             </thead>
             <tbody id="myGradesTable">
                 <tr><td colspan="2">Loading your grades...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 📅 My Attendance History -->
+    <div class="card">
+        <h2>📅 My Attendance Record (የአቴንዳንስ ታሪክ)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date (ቀን)</th>
+                    <th>Status (ሁኔታ)</th>
+                </tr>
+            </thead>
+            <tbody id="myAttendanceTable">
+                <tr><td colspan="2">Loading attendance...</td></tr>
             </tbody>
         </table>
     </div>
@@ -89,8 +108,10 @@ async function loadAnnouncements() {
     }
 }
 
-async function loadMyGrades() {
-    const tableBody = document.getElementById("myGradesTable");
+async function loadMyData() {
+    const gradesTable = document.getElementById("myGradesTable");
+    const attTable = document.getElementById("myAttendanceTable");
+
     try {
         const { data: { user } } = await supabaseClient.auth.getUser();
         if (!user) {
@@ -98,27 +119,43 @@ async function loadMyGrades() {
             return;
         }
 
-        const { data: grades, error } = await supabaseClient
+        // 1. Load Grades
+        const { data: grades } = await supabaseClient
             .from('grades')
             .select('*')
             .eq('student_id', user.id);
 
-        if (error) throw error;
-
         if (!grades || grades.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
-            return;
+            gradesTable.innerHTML = "<tr><td colspan='2'>No grades registered for you yet.</td></tr>";
+        } else {
+            gradesTable.innerHTML = grades.map(g => `
+                <tr>
+                    <td><b>${g.subject}</b></td>
+                    <td><b>${g.score}%</b></td>
+                </tr>
+            `).join('');
         }
 
-        tableBody.innerHTML = grades.map(g => `
-            <tr>
-                <td><b>${g.subject}</b></td>
-                <td><b>${g.score}%</b></td>
-            </tr>
-        `).join('');
+        // 2. Load Attendance
+        const { data: attendance } = await supabaseClient
+            .from('attendance')
+            .select('*')
+            .eq('student_id', user.id)
+            .order('date', { ascending: false });
+
+        if (!attendance || attendance.length === 0) {
+            attTable.innerHTML = "<tr><td colspan='2'>No attendance records found.</td></tr>";
+        } else {
+            attTable.innerHTML = attendance.map(a => `
+                <tr>
+                    <td>${a.date}</td>
+                    <td><span class="badge badge-${a.status}">${a.status}</span></td>
+                </tr>
+            `).join('');
+        }
 
     } catch (err) {
-        tableBody.innerHTML = `<tr><td colspan='2' style='color:red;'>Error: ${err.message}</td></tr>`;
+        gradesTable.innerHTML = `<tr><td colspan='2' style='color:red;'>Error: ${err.message}</td></tr>`;
     }
 }
 
@@ -128,7 +165,7 @@ async function logout() {
 }
 
 loadAnnouncements();
-loadMyGrades();
+loadMyData();
 </script>
 
 </body>
