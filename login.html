@@ -93,21 +93,18 @@ async function loginUser() {
         if (error) throw error;
 
         if (students && students.length > 0) {
-            // የተማሪውን መረጃ በ LocalStorage ማስቀመጥ
             localStorage.setItem('loggedInStudent', JSON.stringify(students[0]));
-            
-            alert(`እንኳን ደህና መጡ! ተማሪ ${students[0].name} (ክፍል ${students[0].grade}) በስኬት ገብተዋል።`);
-            
-            // 🎯 OK ሲባል ቀጥታ ወደ ተማሪው ገጽ (student.html) መውሰጃ መስመር
-            window.location.href = "student.html";
+            // 🚀 ምንም alert ሳያሳይ ወዲያውኑ ወደ student.html ይገባል
+            window.location.replace("student.html");
         } else {
             alert("የተሳሳተ ስም ወይም የስልክ ቁጥር! እባክዎን መጀመሪያ ይመዝገቡ።");
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = 'የወላጅ/ተማሪ ግባ';
         }
 
     } catch (err) {
         console.error("Login Error:", err);
         alert("ለመግባት ሲሞከር ስህተት ተከሰተ፦ " + err.message);
-    } finally {
         loginBtn.disabled = false;
         loginBtn.innerHTML = 'የወላጅ/ተማሪ ግባ';
     }
