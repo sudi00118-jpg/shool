@@ -17,7 +17,7 @@
         label { display: block; margin-bottom: 7px; color: #344054; font-weight: bold; }
         input { width: 100%; padding: 14px; border: 1px solid #d0d5dd; border-radius: 10px; font-size: 16px; margin-bottom: 17px; outline: none; }
         .login-btn { width: 100%; padding: 15px; border: 0; border-radius: 10px; background: #102a43; color: white; font-size: 17px; font-weight: bold; cursor: pointer; }
-        .message { margin-top: 15px; text-align: center; font-weight: bold; }
+        .message { margin-top: 15px; text-align: center; font-weight: bold; word-break: break-all; }
         .footer { text-align: center; margin-top: 22px; color: #667085; font-size: 13px; }
     </style>
 </head>
@@ -28,29 +28,26 @@
     <div class="subtitle">የነገው ተስፋ — School Portal</div>
 
     <div class="role-buttons">
-        <div class="role active" onclick="selectRole('admin', this)"><span class="icon">👨‍💼</span> Admin</div>
-        <div class="role" onclick="selectRole('teacher', this)"><span class="icon">👨‍🏫</span> Teacher</div>
-        <div class="role" onclick="selectRole('student', this)"><span class="icon">👨‍🎓</span> Student</div>
+        <div class="role active" onclick="selectRole('admin', this)"><span class="icon">👨‍💼</span> አስተዳዳሪ</div>
+        <div class="role" onclick="selectRole('teacher', this)"><span class="icon">👨‍🏫</span> መምህር</div>
+        <div class="role" onclick="selectRole('student', this)"><span class="icon">👨‍🎓</span> ተማሪ</div>
     </div>
 
     <form onsubmit="login(event)">
-        <label>Email Address</label>
-        <input id="email" type="email" placeholder="Enter email address" required>
+        <label>የኢሜይል አድራሻ</label>
+        <input id="email" type="email" placeholder="Email address" required>
 
-        <label>Password</label>
-        <input id="password" type="password" placeholder="Enter password" required>
+        <label>የየለፍ ቃል</label>
+        <input id="password" type="password" placeholder="Password" required>
 
-        <button class="login-btn" type="submit">🔐 Login</button>
+        <button class="login-btn" type="submit">🔐 ይግቡ</button>
     </form>
 
     <div id="message" class="message"></div>
-    <div class="footer">Future Hope School © 2026</div>
+    <div class="footer">የወደፊት ተስፋ ትምህርት ቤት © 2026</div>
 </div>
 
-<!-- 1. SUPABASE SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- 2. SUPABASE CONFIG FILE -->
 <script src="supabase-config.js"></script>
 
 <script>
@@ -69,42 +66,57 @@ async function login(event) {
     const message = document.getElementById("message");
 
     message.style.color = "#102a43";
-    message.textContent = "⏳ Logging in...";
+    message.textContent = "⏳ በመግባት ላይ...";
 
-    // Supabase Authentication Login
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-    });
+    try {
+        if (typeof supabase === 'undefined') {
+            throw new Error("supabase-config.js አልተገናኘም!");
+        }
 
-    if (error) {
+        // 1. Supabase Authentication
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            message.style.color = "#d92d20";
+            message.textContent = "❌ " + error.message;
+            return;
+        }
+
+        // 2. Profile fetch
+        const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', data.user.id)
+            .maybeSingle();
+
+        if (profileError) {
+            message.style.color = "#d92d20";
+            message.textContent = "❌ DB Error: " + profileError.message;
+            return;
+        }
+
+        if (!profile) {
+            message.style.color = "#d92d20";
+            message.textContent = "❌ Profile አልተገኘም!";
+            return;
+        }
+
+        if (profile.role === selectedRole) {
+            message.style.color = "#027a48";
+            message.textContent = "✅ በትክክል ገብተዋል! በመቀየር ላይ...";
+            setTimeout(() => {
+                window.location.href = selectedRole + ".html";
+            }, 800);
+        } else {
+            message.style.color = "#d92d20";
+            message.textContent = `❌ ይህ አካውንት የተመዘገበው እንደ ${profile.role} ነው።`;
+        }
+    } catch (err) {
         message.style.color = "#d92d20";
-        message.textContent = "❌ " + error.message;
-        return;
-    }
-
-    // Role verification from profiles table
-    const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .single();
-
-    if (profileError || !profile) {
-        message.style.color = "#d92d20";
-        message.textContent = "❌ User profile not found!";
-        return;
-    }
-
-    if (profile.role === selectedRole) {
-        message.style.color = "#027a48";
-        message.textContent = "✅ Login successful!";
-        setTimeout(() => {
-            window.location.href = selectedRole + ".html";
-        }, 1000);
-    } else {
-        message.style.color = "#d92d20";
-        message.textContent = `❌ Account is not registered as ${selectedRole}.`;
+        message.textContent = "❌ Error: " + err.message;
     }
 }
 </script>
