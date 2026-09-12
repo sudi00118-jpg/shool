@@ -4,110 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>የመምህራን መግቢያ | የነገው ተስፋ የ2ኛ ደረጃ ትምህርት ቤት</title>
-    <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        
-        .teacher-card {
-            width: 100%;
-            max-width: 400px;
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-top: 5px solid #0284c7;
-        }
-
-        .teacher-card h2 { color: #0369a1; text-align: center; margin-bottom: 5px; font-size: 22px; }
-        .teacher-card p.subtitle { text-align: center; color: #64748b; font-size: 13px; margin-bottom: 25px; }
-
+        body { background-color: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .login-card { width: 100%; max-width: 400px; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid #0284c7; }
+        .login-card h2 { color: #0369a1; text-align: center; margin-bottom: 5px; font-size: 22px; }
+        .subtitle { text-align: center; color: #64748b; font-size: 13px; margin-bottom: 25px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155; }
-        
-        .form-control {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-        }
-
+        .form-control { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-control:focus { border-color: #0284c7; }
-
-        .btn-teacher-login {
-            width: 100%;
-            background: #0284c7;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-teacher-login:hover { background: #0369a1; }
-        .btn-teacher-login:disabled { background: #94a3b8; cursor: not-allowed; }
-
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-        }
-
-        .back-link a {
-            color: #64748b;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
+        .btn-teacher { width: 100%; background: #0284c7; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; transition: 0.3s; margin-top: 10px; }
+        .btn-teacher:hover { background: #0369a1; }
+        .back-link { text-align: center; margin-top: 20px; font-size: 13px; }
+        .back-link a { color: #64748b; text-decoration: none; }
         .back-link a:hover { color: #0284c7; }
     </style>
 </head>
 <body>
 
-<div class="teacher-card">
+<div class="login-card">
     <h2><i class="fa-solid fa-chalkboard-user"></i> የመምህራን መግቢያ</h2>
     <p class="subtitle">የመምህራን ፖርታል መግቢያ ገጽ</p>
     
     <div class="form-group">
-        <label for="teacherEmail">የመምህሩ ኢሜይል / መታወቂያ (ID)</label>
-        <input type="text" id="teacherEmail" class="form-control" placeholder="ምሳሌ፦ teacher@school.edu.et">
+        <label for="teacherEmail">ኢሜይል (Email)</label>
+        <input type="email" id="teacherEmail" class="form-control" placeholder="teacher@gmail.com" required>
     </div>
 
     <div class="form-group">
-        <label for="teacherPassword">ሚስጥር ቃል (Password)</label>
-        <input type="password" id="teacherPassword" class="form-control" placeholder="••••••••">
+        <label for="teacherPassword">ፓስወርድ (Password)</label>
+        <input type="password" id="teacherPassword" class="form-control" placeholder="******" required>
     </div>
 
-    <button onclick="loginTeacher()" id="teacherBtn" class="btn-teacher-login">
-        መምህር ሆኜ ግባ
-    </button>
+    <button onclick="loginTeacher()" id="teacherBtn" class="btn-teacher">መምህር ሆኜ ግባ</button>
 
     <div class="back-link">
-        <a href="login.html">
-            <i class="fa-solid fa-arrow-left"></i> ወደ ወላጅ/ተማሪ መግቢያ ተመለስ
-        </a>
+        <a href="login.html"><i class="fa-solid fa-arrow-left"></i> ወደ ወላጅ/ተማሪ መግቢያ ተመለስ</a>
     </div>
 </div>
 
-<!-- Supabase SDK & Configuration -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 
 <script>
 async function loginTeacher() {
     const email = document.getElementById('teacherEmail').value.trim();
-    const password = document.getElementById('teacherPassword').value;
+    const password = document.getElementById('teacherPassword').value.trim();
     const teacherBtn = document.getElementById('teacherBtn');
 
     if (!email || !password) {
@@ -119,7 +65,6 @@ async function loginTeacher() {
     teacherBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> በመፈተሽ ላይ...';
 
     try {
-        // በ Supabase Auth ወይም በ teachers ቴብል መፈተሽ
         const { data: teacher, error } = await supabaseClient
             .from('teachers')
             .select('*')
@@ -129,11 +74,15 @@ async function loginTeacher() {
         if (error) throw error;
 
         if (teacher && teacher.length > 0) {
+            // የመምህሩን መረጃ ማስቀመጥ
+            localStorage.setItem('loggedInTeacher', JSON.stringify(teacher[0]));
+            
             alert(`እንኳን ደህና መጡ መምህር ${teacher[0].name}!`);
-            // ወደ መምህራን ፖርታል/ዳሽቦርድ መላክ፦
-            // window.location.href = "teacher-dashboard.html";
+            
+            // 🎯 ቀጥታ ወደ teacher.html ገጽህ መውሰጃ
+            window.location.href = "teacher.html";
         } else {
-            alert("የተሳሳተ ኢሜይል ወይም ፓስወርድ!");
+            alert("የተሳሳተ ኢሜይል ወይም ፓስወርድ! እባክዎን ድጋሚ ይሞክሩ።");
         }
 
     } catch (err) {
